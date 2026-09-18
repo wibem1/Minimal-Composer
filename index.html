@@ -13,7 +13,7 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.4</div>
+<div class="version">Version 0.4.5</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><button id="newSeries">Neue Testserie</button></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><input id="model" autocomplete="off" /></div></div>
@@ -27,7 +27,7 @@
 <details><summary>Technischer Ausgabe-Vertrag</summary><div class="small" style="margin:8px 0">Dieser Text wird unverändert an jeden Kompositionsauftrag angehängt. Er enthält ausschließlich das maschinenlesbare Notenformat, keine musikalische Anleitung.</div><div class="diag" id="contractView"></div></details>
 </main><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.4';
+const APP_VERSION='0.4.5';
 const DEFAULT_MODELS={openai:'gpt-5.6-sol',anthropic:'claude-fable-5',google:'gemini-3.1-pro-preview'};
 const TECHNICAL_CONTRACT=`TECHNISCHE AUSGABEANFORDERUNG – KEINE MUSIKALISCHEN ZUSATZREGELN:\nAntworte ausschließlich mit validem JSON, ohne Markdown und ohne Text außerhalb des JSON.\nDie Partitur steht entweder direkt im Wurzelobjekt oder im Feld "score".\nPartiturformat:\n{\n  "title": "optional",\n  "bpm": Zahl,\n  "timeSignature": [Zaehler, Nenner],\n  "tracks": [\n    {\n      "name": "Instrument",\n      "program": 0-127,\n      "channel": 0-15,\n      "notes": [[StartBeat, DauerInBeats, MIDIPitch, Velocity], ...]\n    }\n  ]\n}\nWeitere Textfelder, die der Benutzer in seinem Auftrag ausdrücklich verlangt, dürfen zusätzlich im JSON stehen.\nStartBeat und DauerInBeats dürfen Dezimalzahlen sein. MIDI-Pitch 0-127, Velocity 1-127.\nDas technische Format macht keinerlei Vorgaben zu Stil, Harmonik, Melodik, Rhythmik, Form, Artikulation oder musikalischer Qualität.`;
 const $=id=>document.getElementById(id),provider=$('provider'),model=$('model'),task=$('task'),status=$('status'),diagView=$('diag');
@@ -88,4 +88,4 @@ $('midi').addEventListener('click',()=>{if(currentRun?.score)download(new Blob([
 $('diagnosis').addEventListener('click',()=>{if(!currentRun)return;download(new Blob([JSON.stringify(cleanRun(currentRun),null,2)],{type:'application/json'}),`MinimalComposer-Diagnose-${currentRun.testId}.json`)});
 (async()=>{try{db=await openDB();await ensureSeries();status.textContent='Arbeitsstand wiederhergestellt.'}catch(e){status.textContent='Speicherfehler: '+e.message}})();
 })();
-</script></body></html>
+</script><script src="v040-soundfont.js"></script></body></html>
