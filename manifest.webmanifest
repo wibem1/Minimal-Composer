@@ -1,0 +1,9 @@
+{
+  "name": "Minimal Composer Testbench",
+  "short_name": "Minimal Composer",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}
