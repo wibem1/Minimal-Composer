@@ -84,4 +84,4 @@ $('midi').addEventListener('click',()=>{if(currentRun?.score)download(new Blob([
 $('diagnosis').addEventListener('click',()=>{if(!currentRun)return;download(new Blob([JSON.stringify(cleanRun(currentRun),null,2)],{type:'application/json'}),`MinimalComposer-Diagnose-${currentRun.testId}.json`)});
 (async()=>{try{db=await openDB();await ensureSeries();status.textContent='Arbeitsstand wiederhergestellt.'}catch(e){status.textContent='Speicherfehler: '+e.message}})();
 })();
-</script></body></html>
+</script><script src="./v040-soundfont.js?v=0.6.0"></script></body></html>
