@@ -13,7 +13,7 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.6</div>
+<div class="version">Version 0.4.7</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><button id="newSeries">Neue Testserie</button></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><input id="model" autocomplete="off" /></div></div>
@@ -27,7 +27,7 @@
 <details><summary>Technischer Ausgabe-Vertrag</summary><div class="small" style="margin:8px 0">Dieser Text wird unverändert an jeden Kompositionsauftrag angehängt. Er enthält ausschließlich das maschinenlesbare Notenformat, keine musikalische Anleitung.</div><div class="diag" id="contractView"></div></details>
 </main><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.6';
+const APP_VERSION='0.4.7';
 const DEFAULT_MODELS={openai:'gpt-5.6-sol',anthropic:'claude-fable-5',google:'gemini-3.1-pro-preview'};
 const TECHNICAL_CONTRACT=`TECHNISCHE AUSGABEANFORDERUNG – KEINE MUSIKALISCHEN ZUSATZREGELN:\nAntworte ausschließlich mit validem JSON, ohne Markdown und ohne Text außerhalb des JSON.\nDie Partitur steht entweder direkt im Wurzelobjekt oder im Feld "score".\nPartiturformat:\n{\n  "title": "optional",\n  "bpm": Zahl,\n  "timeSignature": [Zaehler, Nenner],\n  "tracks": [\n    {\n      "name": "Instrument",\n      "program": 0-127,\n      "channel": 0-15,\n      "notes": [[StartBeat, DauerInBeats, MIDIPitch, Velocity], ...]\n    }\n  ]\n}\nWeitere Textfelder, die der Benutzer in seinem Auftrag ausdrücklich verlangt, dürfen zusätzlich im JSON stehen.\nStartBeat und DauerInBeats dürfen Dezimalzahlen sein. MIDI-Pitch 0-127, Velocity 1-127.\nDas technische Format macht keinerlei Vorgaben zu Stil, Harmonik, Melodik, Rhythmik, Form, Artikulation oder musikalischer Qualität.`;
 const $=id=>document.getElementById(id),provider=$('provider'),model=$('model'),task=$('task'),status=$('status'),diagView=$('diag');
@@ -89,5 +89,22 @@ $('diagnosis').addEventListener('click',()=>{if(!currentRun)return;download(new 
 (async()=>{try{db=await openDB();await ensureSeries();status.textContent='Arbeitsstand wiederhergestellt.'}catch(e){status.textContent='Speicherfehler: '+e.message}})();
 })();
 </script><script>
-window.addEventListener('DOMContentLoaded',()=>{const p=document.createElement('script');p.src='v040-soundfont.js?v=0.4.6';p.onerror=()=>{const st=document.getElementById('status');if(st)st.textContent='Fehler: MIDI-Player konnte nicht geladen werden.'};document.body.appendChild(p)});
+(()=>{'use strict';
+const $=id=>document.getElementById(id), main=document.querySelector('main');
+const box=document.createElement('section');box.id='sfPlayer';box.className='card';box.style.marginTop='14px';
+box.innerHTML='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px"><strong>MIDI-Player · SoundFont</strong><span id="sfState" class="small">bereit</span></div><div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center"><button id="sfPlay">▶︎</button><button id="sfStop">■</button><input id="sfSeek" type="range" min="0" max="1" step="0.01" value="0" style="width:100%"><span id="sfTime" class="small">0:00 / 0:00</span></div>';
+const result=document.getElementById('result');main.insertBefore(box,result||null);
+let ac=null,fp=null,playing=false,offset=0,started=0,dur=0,timer=null,score=null;const cache=new Map();
+const fmt=x=>{x=Math.max(0,+x||0);return Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0')};
+function setTime(x){$('sfSeek').value=String(Math.min(dur,x));$('sfTime').textContent=fmt(x)+' / '+fmt(dur)}
+function calc(sc){let e=0;for(const t of sc?.tracks||[])for(const n of t.notes||[])e=Math.max(e,(+n[0]||0)+(+n[1]||0));return e*60/(+sc?.bpm||120)}
+async function engine(){if(fp)return;if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(!window.WebAudioFontPlayer){await new Promise((ok,no)=>{const x=document.createElement('script');x.src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js';x.onload=ok;x.onerror=()=>no(new Error('SoundFont-Bibliothek nicht geladen'));document.head.appendChild(x)})}fp=new WebAudioFontPlayer()}
+async function preset(program){program=Math.max(0,Math.min(127,Math.round(+program||0)));if(cache.has(program))return cache.get(program);await engine();const code=String(program).padStart(3,'0')+'0',name='_tone_'+code+'_FluidR3_GM_sf2_file',path='https://surikov.github.io/webaudiofontdata/sound/'+code+'_FluidR3_GM_sf2_file.js';$('sfState').textContent='Instrumente laden …';await new Promise((ok,no)=>{fp.loader.startLoad(ac,path,name);fp.loader.waitLoad(()=>{const p=window[name];if(!p)return no(new Error('Instrument '+program+' fehlt'));try{fp.loader.decodeAfterLoading(ac,name)}catch(_){}cache.set(program,p);ok()})});return cache.get(program)}
+function cancel(){try{fp?.cancelQueue(ac)}catch(_){}if(timer){clearInterval(timer);timer=null}}
+function stop(reset=true){if(playing)offset=Math.min(dur,offset+(performance.now()-started)/1000);cancel();playing=false;$('sfPlay').textContent='▶︎';if(reset)offset=0;setTime(offset)}
+async function play(){score=window.__minimalComposerCurrentScore||currentRun?.score||null;if(!score)return;if(offset>=dur-.02)offset=0;try{for(const t of score.tracks||[])await preset(t.program);await ac.resume();const spb=60/(+score.bpm||120),t0=ac.currentTime+.04;for(const t of score.tracks||[]){const p=cache.get(Math.max(0,Math.min(127,Math.round(+t.program||0))));for(const n of t.notes||[]){const ns=(+n[0]||0)*spb,ne=ns+Math.max(.03,(+n[1]||.25)*spb);if(ne<=offset)continue;fp.queueWaveTable(ac,ac.destination,p,t0+Math.max(0,ns-offset),Math.max(0,Math.min(127,Math.round(+n[2]||60))),Math.max(.03,ne-Math.max(ns,offset)),Math.max(.02,Math.min(1,(+n[3]||80)/127)))}}started=performance.now();playing=true;$('sfPlay').textContent='❚❚';$('sfState').textContent='SoundFont bereit';timer=setInterval(()=>{const x=offset+(performance.now()-started)/1000;if(x>=dur)stop(true);else setTime(x)},100)}catch(e){$('sfState').textContent='Fehler';document.getElementById('status').textContent='SoundFont-Fehler: '+e.message}}
+function refresh(){score=currentRun?.score||null;if(!score)return;window.__minimalComposerCurrentScore=score;dur=calc(score);$('sfSeek').max=String(Math.max(.01,dur));setTime(0)}
+$('sfPlay').onclick=()=>playing?stop(false):play();$('sfStop').onclick=()=>stop(true);$('sfSeek').oninput=()=>{offset=+$('sfSeek').value||0;if(playing){stop(false);offset=+$('sfSeek').value||0;play()}setTime(offset)};
+new MutationObserver(refresh).observe(result||main,{subtree:true,childList:true,characterData:true});setTimeout(refresh,300);
+})();
 </script></body></html>
