@@ -29,4 +29,7 @@ assert.equal(actual({timeSignature:[3,4],tracks:[{notes:[[0,1,60,80],[155,1,64,8
 assert(html.includes("stage.startsWith('midi_translation')"));
 assert(html.includes("midi_translation_completeness_retry"));
 assert(html.includes("if(actualBars<plannedBars)throw new Error"));
+assert(html.includes("catch(e){ideaWarning="));
+assert(html.includes("currentRun.status=ideaWarning?'ok_with_warning':'ok'"));
+assert(html.includes("MIDI wurde vollständig erzeugt; die nachträgliche Kompositionsidee konnte nicht geladen werden."));
 console.log('Minimal Composer smoke OK');
