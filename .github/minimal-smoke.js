@@ -28,6 +28,9 @@ assert.equal(actual({timeSignature:[4,4],tracks:[{notes:[[0,1,60,80],[59,1,64,80
 assert.equal(actual({timeSignature:[3,4],tracks:[{notes:[[0,1,60,80],[155,1,64,80]]}]}),52);
 assert(html.includes("stage.startsWith('midi_translation')"));
 assert(html.includes("midi_translation_completeness_retry"));
+assert(html.includes("VERBINDLICHES ZEITRASTER DER TECHNISCHEN PARTITUR"));
+assert(html.includes("plannedBars=Math.max(plannedBarsFromDraft(snapshot.visibleTask),plannedBarsFromDraft(draft))"));
+assert(html.includes("beschriebene Taktgruppen dürfen nicht zu wenigen Beispieltakten zusammengezogen oder ausgelassen werden"));
 assert(html.includes("if(actualBars<plannedBars)throw new Error"));
 assert(html.includes("catch(e){ideaWarning="));
 assert(html.includes("currentRun.status=ideaWarning?'ok_with_warning':'ok'"));
