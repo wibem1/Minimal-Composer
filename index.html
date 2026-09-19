@@ -20,7 +20,7 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.25</div>
+<div class="version">Version 0.4.26</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
@@ -35,7 +35,7 @@
 <div id="contractView" hidden></div>
 </main><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.25';
+const APP_VERSION='0.4.26';
 const MODEL_CATALOG={
 openai:[
  ['gpt-6-astra','GPT-6 Astra'],
@@ -134,7 +134,7 @@ let translated=await callModel(snapshot,key,translationPrompt,'midi_translation'
 await uniqueTitleIfNeeded(snapshot,key,score,draft,ev);
 const midiBytes=buildMidi(score),buf=midiBytes.buffer.slice(midiBytes.byteOffset,midiBytes.byteOffset+midiBytes.byteLength),midiHash=await sha256Buffer(buf);currentMidiBlob=new Blob([midiBytes],{type:'audio/midi'});currentRun.midi={bytes:midiBytes.byteLength,sha256:midiHash,note:'Deterministisch lokal aus den unveränderten Partiturwerten erzeugt; keine musikalische Nachbearbeitung.'};ev('midi_generated',{bytes:midiBytes.byteLength,sha256:midiHash});
 const ideaPrompt='Analysiere die soeben entstandene Komposition und formuliere ihre Kompositionsidee knapp und musikalisch konkret. Beschreibe Charakter, formalen Verlauf, rhythmische und harmonische Grundidee sowie das Verhältnis der Stimmen bzw. Instrumente. Erfinde nichts und gib keine Bewertung ab. Antworte nur mit der Kompositionsidee als normalem Text.\n\nURSPRÜNGLICHER AUFTRAG:\n'+snapshot.visibleTask+'\n\nMUSIKALISCHER ENTWURF:\n'+draft+'\n\nTECHNISCHE PARTITUR:\n'+translated;
-const idea=await callModel(snapshot,key,ideaPrompt,'composition_idea_afterwards',ev);currentRun.idea=idea.trim();currentRun.completedAt=iso();currentRun.status='ok';lastRequestSnapshot=structuredClone(snapshot);await persistRun();await showRun(currentRun,true);await saveWorkspace();await renderHistory();status.textContent='Fertig. Drei KI-Stufen vollständig protokolliert.'}
+let ideaWarning='';try{const idea=await callModel(snapshot,key,ideaPrompt,'composition_idea_afterwards',ev);currentRun.idea=idea.trim()}catch(e){ideaWarning=e?.message||String(e);currentRun.idea='';currentRun.ideaWarning=ideaWarning;ev('composition_idea_failed',{message:ideaWarning})}currentRun.completedAt=iso();currentRun.status=ideaWarning?'ok_with_warning':'ok';lastRequestSnapshot=structuredClone(snapshot);await persistRun();await showRun(currentRun,true);await saveWorkspace();await renderHistory();status.textContent=ideaWarning?'Fertig. MIDI wurde vollständig erzeugt; die nachträgliche Kompositionsidee konnte nicht geladen werden.':'Fertig. Komposition vollständig protokolliert.'}
 $('compose').addEventListener('click',async()=>{stopPlayback();setBusy(true);status.classList.add('composing');status.textContent='Komponiere …';try{await run(makeSnapshot(),null)}catch(e){status.textContent='Fehler: '+e.message;if(currentRun){currentRun.status=currentRun.status||'error';currentRun.completedAt=currentRun.completedAt||iso();try{await persistRun();await saveWorkspace();await renderHistory()}catch(se){status.textContent+=' | Speicherfehler: '+se.message}diagView.textContent=JSON.stringify(cleanRun(currentRun),null,2);$('diagnosis').disabled=false}}finally{status.classList.remove('composing');setBusy(false)}});
 $('repeat').addEventListener('click',async()=>{if(!lastRequestSnapshot)return;stopPlayback();setBusy(true);const prior=currentRun?.testId||null;status.textContent='Wiederhole exakt denselben Request …';try{await run(structuredClone(lastRequestSnapshot),prior)}catch(e){status.textContent='Fehler: '+e.message}finally{setBusy(false)}});
 $('play').addEventListener('click',()=>currentRun?.score&&playScore(currentRun.score));$('stop').addEventListener('click',stopPlayback);
