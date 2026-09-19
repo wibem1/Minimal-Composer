@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.4.18" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.4.18" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.4.18" />
+<link rel="manifest" href="manifest.webmanifest?v=0.4.19" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.4.19" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.4.19" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -20,10 +20,10 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.18</div>
+<div class="version">Version 0.4.19</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
-<div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><input id="model" autocomplete="off" /></div></div>
+<div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
 <section id="sfPlayer" class="card" style="margin:14px 0"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px"><strong>MIDI-Player · SoundFont</strong><span id="sfState" class="small">bereit</span></div><div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center"><button id="sfPlay" type="button">▶︎</button><button id="sfStop" type="button">■</button><input id="sfSeek" type="range" min="0" max="1" step="0.01" value="0" style="width:100%"><span id="sfTime" class="small">0:00 / 0:00</span></div></section>
 <div class="actions"><button class="primary" id="compose">Komponieren</button><button id="repeat" disabled>Nochmal gleicher Auftrag</button><button id="play" disabled>Abspielen</button><button id="stop" disabled>Stop</button><button id="midi" disabled>MIDI herunterladen</button><button id="diagnosis" disabled>Diagnosedatei</button></div>
@@ -35,7 +35,31 @@
 <div id="contractView" hidden></div>
 </main><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.18';
+const APP_VERSION='0.4.19';
+const MODEL_CATALOG={
+openai:[
+ ['gpt-6-astra','GPT-6 Astra'],
+ ['gpt-5.6-sol','GPT-5.6 Sol'],
+ ['gpt-5.6-terra','GPT-5.6 Terra'],
+ ['gpt-5.6-luna','GPT-5.6 Luna']
+],
+anthropic:[
+ ['claude-fable-5','Claude Fable 5'],
+ ['claude-sonnet-5','Claude Sonnet 5'],
+ ['claude-opus-5','Claude Opus 5'],
+ ['claude-opus-4-8','Claude Opus 4.8'],
+ ['claude-sonnet-4-6','Claude Sonnet 4.6'],
+ ['claude-haiku-4-5-20251001','Claude Haiku 4.5']
+],
+google:[
+ ['gemini-3.1-pro-preview','Gemini 3.1 Pro'],
+ ['gemini-3.8-flash','Gemini 3.8 Flash'],
+ ['gemini-3.7-flash','Gemini 3.7 Flash'],
+ ['gemini-3.6-flash','Gemini 3.6 Flash'],
+ ['gemini-3.5-flash','Gemini 3.5 Flash'],
+ ['gemini-3.1-flash-lite','Gemini 3.1 Flash-Lite'],
+ ['gemini-2.5-pro','Gemini 2.5 Pro']
+]};
 const DEFAULT_MODELS={openai:'gpt-5.6-sol',anthropic:'claude-fable-5',google:'gemini-3.1-pro-preview'};
 const TECHNICAL_CONTRACT=`TECHNISCHE AUSGABEANFORDERUNG – KEINE MUSIKALISCHEN ZUSATZREGELN:\nAntworte ausschließlich mit validem JSON, ohne Markdown und ohne Text außerhalb des JSON.\nDie Partitur steht entweder direkt im Wurzelobjekt oder im Feld "score".\nPartiturformat:\n{\n  "title": "optional",\n  "bpm": Zahl,\n  "timeSignature": [Zaehler, Nenner],\n  "tracks": [\n    {\n      "name": "Instrument",\n      "program": 0-127,\n      "channel": 0-15,\n      "notes": [[StartBeat, DauerInBeats, MIDIPitch, Velocity], ...]\n    }\n  ]\n}\nWeitere Textfelder, die der Benutzer in seinem Auftrag ausdrücklich verlangt, dürfen zusätzlich im JSON stehen.\nStartBeat und DauerInBeats dürfen Dezimalzahlen sein. MIDI-Pitch 0-127, Velocity 1-127.\nDas technische Format macht keinerlei Vorgaben zu Stil, Harmonik, Melodik, Rhythmik, Form, Artikulation oder musikalischer Qualität.`;
 const $=id=>document.getElementById(id),provider=$('provider'),model=$('model'),task=$('task'),status=$('status'),diagView=$('diag');
@@ -59,8 +83,14 @@ async function ensureSeries(){const m=await get('meta','workspace');if(m?.value?
 async function saveWorkspace(){await put('meta',{key:'workspace',value:{currentSeriesId,currentRunId:currentRun?.testId||null,provider:provider.value,model:model.value.trim(),task:task.value}})}
 async function refreshSeriesName(){const s=await get('series',currentSeriesId);$('seriesName').textContent=s?.name||'–'}
 ['OpenAI','Anthropic','Google'].forEach(n=>{const el=$('key'+n);el.value=localStorage.getItem('mct_key_'+n.toLowerCase())||'';el.addEventListener('input',()=>localStorage.setItem('mct_key_'+n.toLowerCase(),el.value))});
-function setDefaultModel(force=null){model.value=force||localStorage.getItem('mct_model_'+provider.value)||DEFAULT_MODELS[provider.value]}
-provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('input',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value.trim());await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());$('contractView').textContent=TECHNICAL_CONTRACT;
+function setDefaultModel(force=null){
+ const wanted=force||localStorage.getItem('mct_model_'+provider.value)||DEFAULT_MODELS[provider.value];
+ model.innerHTML='';
+ for(const [value,label] of MODEL_CATALOG[provider.value]||[]){const o=document.createElement('option');o.value=value;o.textContent=label;model.appendChild(o)}
+ if(wanted&&![...model.options].some(o=>o.value===wanted)){const o=document.createElement('option');o.value=wanted;o.textContent=wanted+' (gespeichert)';model.appendChild(o)}
+ model.value=wanted;
+}
+provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());$('contractView').textContent=TECHNICAL_CONTRACT;
 async function newSeries(){let name=prompt('Name der neuen Testserie:',nowName());if(name===null)return;name=name.trim()||nowName();const s={id:makeId('S'),name,createdAt:iso()};await put('series',s);currentSeriesId=s.id;currentRun=null;lastRequestSnapshot=null;currentMidiBlob=null;task.value='';$('resultCard').hidden=true;$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=true;$('repeat').disabled=true;diagView.textContent='Noch kein Testlauf.';status.textContent='Neue Testserie begonnen. Frühere Serien bleiben im Verlauf erhalten.';await saveWorkspace();await refreshSeriesName();await renderHistory()}
 $('backupExport').addEventListener('click',()=>exportBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
 $('backupSecure').addEventListener('click',()=>exportSecureBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
