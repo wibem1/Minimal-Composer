@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.4.21" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.4.21" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.4.21" />
+<link rel="manifest" href="manifest.webmanifest?v=0.4.22" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.4.22" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.4.22" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -20,7 +20,7 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.21</div>
+<div class="version">Version 0.4.22</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
@@ -35,7 +35,7 @@
 <div id="contractView" hidden></div>
 </main><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.21';
+const APP_VERSION='0.4.22';
 const MODEL_CATALOG={
 openai:[
  ['gpt-6-astra','GPT-6 Astra'],
@@ -160,6 +160,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(()=>
 </script>
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.4.21',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.4.22',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
