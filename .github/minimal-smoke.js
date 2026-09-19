@@ -5,11 +5,11 @@ assert(script,'script block missing');
 new Function(script);
 function fn(name,next){
   const a=script.indexOf('function '+name+'('); assert(a>=0,name+' missing');
-  const b=script.indexOf('function '+next+'(',a); assert(b>a,next+' missing');
+  const b=script.indexOf(next,a); assert(b>a,next+' missing');
   return script.slice(a,b);
 }
 const ctx={}; vm.createContext(ctx);
-vm.runInContext(fn('plannedBarsFromDraft','actualBarsFromScore')+fn('actualBarsFromScore','sha256Text'),ctx);
+vm.runInContext(fn('plannedBarsFromDraft','actualBarsFromScore')+fn('actualBarsFromScore','async function sha256Text'),ctx);
 for(const [s,n] of [
  ['Teil A (Takt 1–16), B (Takt 17–32), A′ (Takt 33–44), Coda (Takt 45–52)',52],
  ['52 Takte',52],['52-taktiges Stück',52],['T. 1-54',54],['T 1—36',36],['16 taktige Komposition',16]
