@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.0 · Composition Engine v1.0.0</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
+<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.1 · Composition Engine v1.0.0</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
@@ -41,7 +41,7 @@
 <div class="actions"><button id="infoClose" class="primary" type="button">Schließen</button></div></div></dialog>
 </main><script src="composition-engine.js?v=1.0.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.0';
+const APP_VERSION='0.5.1';
 const ENGINE_VERSION=window.CompositionEngine?.version||'unbekannt';
 const MODEL_CATALOG={
 openai:[
@@ -88,7 +88,7 @@ function get(store,key){return new Promise((resolve,reject)=>{const r=tx(store).
 function all(store){return new Promise((resolve,reject)=>{const r=tx(store).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error)})}
 function nowName(){return 'Testserie '+new Date().toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}
 const iso=()=>new Date().toISOString(),makeId=p=>p+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
-async function ensureSeries(){await loadStoredKeys();const m=await get('meta','workspace');if(m?.value?.currentSeriesId&&await get('series',m.value.currentSeriesId)){currentSeriesId=m.value.currentSeriesId}else{const s={id:makeId('S'),name:nowName(),createdAt:iso()};await put('series',s);currentSeriesId=s.id}const ws=m?.value||{};provider.value=ws.provider||'openai';setDefaultModel(ws.model||null);task.value=ws.task||'';await restoreCurrent(ws.currentRunId||null);await saveWorkspace();await renderHistory();await refreshSeriesName()}
+async function ensureSeries(){await loadStoredKeys();const m=await get('meta','workspace');if(m?.value?.currentSeriesId&&await get('series',m.value.currentSeriesId)){currentSeriesId=m.value.currentSeriesId}else{const s={id:makeId('S'),name:nowName(),createdAt:iso()};await put('series',s);currentSeriesId=s.id}const ws=m?.value||{};provider.value=ws.provider||'openai';setDefaultModel();task.value=ws.task||'';await restoreCurrent(ws.currentRunId||null);await saveWorkspace();await renderHistory();await refreshSeriesName()}
 async function saveWorkspace(){await put('meta',{key:'workspace',value:{currentSeriesId,currentRunId:currentRun?.testId||null,provider:provider.value,model:model.value.trim(),task:task.value}})}
 async function refreshSeriesName(){const s=await get('series',currentSeriesId);$('seriesName').textContent=s?.name||'–'}
 function keyStorageName(n){return 'mct_key_'+n.toLowerCase()}
@@ -112,10 +112,12 @@ async function storeAllKeys(){
 }
 ['OpenAI','Anthropic','Google'].forEach(n=>{const el=$('key'+n);el.addEventListener('change',()=>storeAllKeys());el.addEventListener('blur',()=>storeAllKeys())});
 function setDefaultModel(force=null){
- const wanted=force||localStorage.getItem('mct_model_'+provider.value)||DEFAULT_MODELS[provider.value];
+ const catalog=MODEL_CATALOG[provider.value]||[];
+ const stored=localStorage.getItem('mct_model_'+provider.value);
+ const candidate=force||stored||DEFAULT_MODELS[provider.value];
+ const wanted=catalog.some(([value])=>value===candidate)?candidate:DEFAULT_MODELS[provider.value];
  model.innerHTML='';
  for(const [value,label] of MODEL_CATALOG[provider.value]||[]){const o=document.createElement('option');o.value=value;o.textContent=label;model.appendChild(o)}
- if(wanted&&![...model.options].some(o=>o.value===wanted)){const o=document.createElement('option');o.value=wanted;o.textContent=wanted+' (gespeichert)';model.appendChild(o)}
  model.value=wanted;
 }
 provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());$('contractView').textContent=window.CompositionEngine.TECHNICAL_CONTRACT;
@@ -128,7 +130,7 @@ $('newSeries').addEventListener('click',newSeries);
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function renderHistory(){const series=(await all('series')).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)),runs=await all('runs');const host=$('history');host.innerHTML='';if(!series.length){host.innerHTML='<div class="empty">Noch keine Testserie.</div>';return}for(const s of series){const box=document.createElement('div');box.className='series';const head=document.createElement('div');head.className='serieshead';head.innerHTML=`<div><strong>${esc(s.name)}</strong><div class="runmeta">${new Date(s.createdAt).toLocaleString('de-DE')}</div></div>`;if(s.id===currentSeriesId){const tag=document.createElement('span');tag.className='small';tag.textContent='aktuell';head.appendChild(tag)}box.appendChild(head);const rr=runs.filter(r=>r.seriesId===s.id).sort((a,b)=>(b.startedAt||'').localeCompare(a.startedAt||''));const list=document.createElement('div');list.className='runs';if(!rr.length)list.innerHTML='<div class="empty">Noch keine Testläufe.</div>';for(const r of rr){const row=document.createElement('div');row.className='run';const main=document.createElement('div');main.className='runmain';main.innerHTML=`<div class="runtitle">${esc(r.score?.title||r.input?.visibleTask||'Komposition')}</div><div class="runmeta">${esc(r.input?.provider||'')} · ${esc(r.input?.model||'')} · ${new Date(r.startedAt).toLocaleString('de-DE')}</div>`;const b=document.createElement('button');b.textContent='Laden';b.onclick=()=>loadRun(r.id);row.append(main,b);list.appendChild(row)}box.appendChild(list);host.appendChild(box)}}
 async function restoreCurrent(runId){if(!runId)return;const r=await get('runs',runId);if(r)await showRun(r,false)}
-async function loadRun(runId){const r=await get('runs',runId);if(!r)return;currentSeriesId=r.seriesId;provider.value=r.input.provider;model.value=r.input.model;task.value=r.input.visibleTask;await showRun(r,true);await refreshSeriesName();await saveWorkspace();await renderHistory();status.textContent='Testlauf aus dem Verlauf geladen.'}
+async function loadRun(runId){const r=await get('runs',runId);if(!r)return;currentSeriesId=r.seriesId;provider.value=r.input.provider;setDefaultModel(r.input.model);task.value=r.input.visibleTask;await showRun(r,true);await refreshSeriesName();await saveWorkspace();await renderHistory();status.textContent='Testlauf aus dem Verlauf geladen.'}
 async function showRun(r,enableRepeat){currentRun=structuredClone(r);lastRequestSnapshot=r.requestSnapshot?structuredClone(r.requestSnapshot):null;const score=r.score;window.__minimalComposerCurrentScore=score||null;window.dispatchEvent(new CustomEvent('minimal-composer-score-loaded',{detail:{score:score||null,runId:r.id||r.testId||null}}));currentMidiBlob=score?new Blob([buildMidi(score)],{type:'audio/midi'}):null;$('resultCard').hidden=!score;if(score){$('title').textContent=score.title||'Komposition';$('facts').textContent=`${score.tracks.length} Spur(en) · ${score.bpm} BPM · Test-ID ${r.testId}`;$('ideaWrap').hidden=!r.idea;$('idea').textContent=r.idea||'';$('play').disabled=false;$('midi').disabled=false;$('diagnosis').disabled=false}else{$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=!r}$('repeat').disabled=!(enableRepeat&&lastRequestSnapshot);diagView.textContent=JSON.stringify(cleanRun(r),null,2)}
 function cleanRun(r){const c=structuredClone(r);delete c.requestSnapshot;return c}
 function fullPrompt(v){return v.trim()}
