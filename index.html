@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.9 · Composition Engine v1.1.1</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
+<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.10 · Composition Engine v1.0.2</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -33,14 +33,14 @@
 <div id="contractView" hidden></div>
 <dialog id="infoDialog"><div class="card infoPanel" style="margin:0;max-width:620px">
 <h2 style="margin-top:0">Minimal Composer</h2>
-<p><strong>App:</strong> v0.5.9<br><strong>Composition Engine:</strong> v1.1.1</p>
-<h3>Aktueller Stand</h3><p>Die bisher erprobte Kompositionspipeline ist als gemeinsames appübergreifendes Modul getrennt. Minimal Composer verwendet eine lokale Kopie der verbindlichen Composition Engine v1.1.1.</p>
+<p><strong>App:</strong> v0.5.10<br><strong>Composition Engine:</strong> v1.0.2</p>
+<h3>Aktueller Stand</h3><p>Die bisher erprobte Kompositionspipeline ist als gemeinsames appübergreifendes Modul getrennt. Minimal Composer verwendet eine lokale Kopie der verbindlichen Composition Engine v1.0.2.</p>
 <h3>Neuerungen</h3><p>Engine und Oberfläche sind getrennt. API-Schlüssel bleiben bei normalen Backups ausgeschlossen; „Backup + Schlüssel“ speichert sie ausschließlich verschlüsselt. App- und Engine-Version werden getrennt ausgewiesen.</p>
 <h3>Jetzt zu testen</h3><p>Normales Backup enthält keine API-Schlüssel. „Backup + Schlüssel“ lässt sich mit Passwort wiederherstellen. Danach einen normalen Kompositionslauf einschließlich MIDI-Wiedergabe und MIDI-Download prüfen.</p>
 <div class="actions"><button id="infoClose" class="primary" type="button">Schließen</button></div></div></dialog>
-</main><script src="composition-engine.js?v=1.1.1"></script><script>
+</main><script src="composition-engine.js?v=1.0.2"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.9';
+const APP_VERSION='0.5.10';
 const ENGINE_VERSION=window.CompositionEngine?.version||'unbekannt';
 const MODEL_CATALOG={
 openai:[
@@ -174,6 +174,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(()=>
 </script>
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.9',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.10',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
