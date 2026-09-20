@@ -16,3 +16,10 @@ Der Technical Core wurde als erstes echtes Untermodul angelegt. Er übernimmt au
 
 ### Nächster Schritt
 Creative Composer und Musical Realizer aus dem noch im Interface liegenden Ablauf lösen, zunächst ohne Prompt- oder Verhaltensänderung. Danach kann die erste klangorientierte Strategie als kontrollierter Vergleich ergänzt werden.
+
+
+### V0.5 – Creative Composer / Musical Realizer extrahiert
+Die bisher unveränderten Prompt-Verantwortungen wurden aus dem Interface in `engine/creative-composer.js` und `engine/musical-realizer.js` verschoben. Das ist weiterhin ein rein struktureller Schritt: Wortlaut und Anzahl der KI-Aufrufe wurden nicht verändert. Damit sind schöpferischer Entwurf, musikalische Realisierung und Technical Core erstmals als getrennte Module vorhanden.
+
+### Folgeschritt
+Als Nächstes wird der Composition Orchestrator herausgelöst. Erst danach wird eine alternative klangorientierte Creative-Strategie ergänzt, damit Referenz und Experiment sauber vergleichbar bleiben.
