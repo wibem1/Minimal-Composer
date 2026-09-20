@@ -1,5 +1,6 @@
 (()=>{'use strict';
 
+const BUILD='1.0.0';
 const TECHNICAL_CONTRACT=`TECHNISCHE AUSGABEANFORDERUNG – KEINE MUSIKALISCHEN ZUSATZREGELN:\nAntworte ausschließlich mit validem JSON, ohne Markdown und ohne Text außerhalb des JSON.\nDie Partitur steht entweder direkt im Wurzelobjekt oder im Feld "score".\nPartiturformat:\n{\n  "title": "optional",\n  "bpm": Zahl,\n  "timeSignature": [Zaehler, Nenner],\n  "tracks": [\n    {\n      "name": "Instrument",\n      "program": 0-127,\n      "channel": 0-15,\n      "notes": [[StartBeat, DauerInBeats, MIDIPitch, Velocity], ...]\n    }\n  ]\n}\nWeitere Textfelder, die der Benutzer in seinem Auftrag ausdrücklich verlangt, dürfen zusätzlich im JSON stehen.\nStartBeat und DauerInBeats dürfen Dezimalzahlen sein. MIDI-Pitch 0-127, Velocity 1-127.\nDas technische Format macht keinerlei Vorgaben zu Stil, Harmonik, Melodik, Rhythmik, Form, Artikulation oder musikalischer Qualität.`;
 function createPrompts(snapshot,draft='',translated=''){
  return{
@@ -21,7 +22,7 @@ function vlq(n){n=Math.max(0,Math.round(n));let b=[n&127];while((n>>=7))b.unshif
 function buildMidi(score){const ppq=480,bpm=Math.max(20,Math.min(400,Number(score.bpm)||120)),ts=Array.isArray(score.timeSignature)?score.timeSignature:[4,4],tracks=[],meta=[];const mpqn=Math.round(60000000/bpm);meta.push({tick:0,bytes:[255,81,3,(mpqn>>16)&255,(mpqn>>8)&255,mpqn&255]},{tick:0,bytes:[255,88,4,Number(ts[0])||4,Math.max(0,Math.round(Math.log2(Number(ts[1])||4))),24,8]});let last=0,md=[];for(const e of meta){md.push(...vlq(e.tick-last),...e.bytes);last=e.tick}md.push(0,255,47,0);tracks.push(chunk('MTrk',md));(score.tracks||[]).forEach((tr,ti)=>{const ch=Math.max(0,Math.min(15,Number.isFinite(Number(tr.channel))?Number(tr.channel):ti%16)),prog=Math.max(0,Math.min(127,Number(tr.program)||0)),ev=[];const name=strBytes(String(tr.name||`Track ${ti+1}`));ev.push({tick:0,p:0,b:[255,3,...vlq(name.length),...name]},{tick:0,p:1,b:[192|ch,prog]});for(const n of(tr.notes||[])){if(!Array.isArray(n)||n.length<4)continue;const st=Math.max(0,Number(n[0])||0),du=Math.max(.01,Number(n[1])||.25),pitch=Math.max(0,Math.min(127,Math.round(Number(n[2])||60))),vel=Math.max(1,Math.min(127,Math.round(Number(n[3])||80)));ev.push({tick:Math.round(st*ppq),p:2,b:[144|ch,pitch,vel]},{tick:Math.round((st+du)*ppq),p:1,b:[128|ch,pitch,0]})}ev.sort((a,b)=>a.tick-b.tick||a.p-b.p);let prev=0,d=[];for(const e of ev){d.push(...vlq(e.tick-prev),...e.b);prev=e.tick}d.push(0,255,47,0);tracks.push(chunk('MTrk',d))});return new Uint8Array([...chunk('MThd',[...u16(1),...u16(tracks.length),...u16(ppq)]),...tracks.flat()])}
 
 async function compose({snapshot,key,repeatOf=null,seriesId=null,runId,now,requestModel,usedTitles=[]}){
- const startedAt=now(),run={id:runId,testId:runId,schema:'minimal-composer-diagnosis-v3',app:{name:'Minimal Composer',version:'0.5.12'},seriesId,startedAt,repeatOf,contextMode:'isolated-three-stage',input:{visibleTask:snapshot.visibleTask,provider:snapshot.provider,model:snapshot.model},technicalContract:TECHNICAL_CONTRACT,events:[],aiCalls:[],requestSnapshot:structuredClone(snapshot)};
+ const startedAt=now(),run={id:runId,testId:runId,schema:'minimal-composer-diagnosis-v3',app:{name:'Minimal Composer',version:'0.5.13'},seriesId,startedAt,repeatOf,contextMode:'isolated-three-stage',input:{visibleTask:snapshot.visibleTask,provider:snapshot.provider,model:snapshot.model},technicalContract:TECHNICAL_CONTRACT,events:[],aiCalls:[],requestSnapshot:structuredClone(snapshot)};
  const ev=(phase,data={})=>run.events.push({at:now(),phase,...data});
  ev('run_started',{note:'Keine frühere Unterhaltung oder Komposition wird an das Modell übertragen.'});
  const call=async(prompt,stage)=>requestModel({snapshot,key,promptText:prompt,stage,run,event:ev});
@@ -33,5 +34,5 @@ async function compose({snapshot,key,repeatOf=null,seriesId=null,runId,now,reque
  return{run,midiBytes};
 }
 
-window.CompositionEngine=Object.freeze({compose,TECHNICAL_CONTRACT,createPrompts,duplicateTitlePrompt,makeRequest,actualRequest,extractText,extractJson,findScore,findIdea,sha256Text,sha256Buffer,buildMidi});
+window.CompositionEngine=Object.freeze({BUILD,compose,TECHNICAL_CONTRACT,createPrompts,duplicateTitlePrompt,makeRequest,actualRequest,extractText,extractJson,findScore,findIdea,sha256Text,sha256Buffer,buildMidi});
 })();
