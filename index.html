@@ -19,9 +19,8 @@
 </style>
 </head>
 <body><main>
-<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.2 · Composition Engine v1.0.0</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
-<div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
-<div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
+<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.3 · Composition Engine v1.0.0</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
+<div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
 <section id="sfPlayer" class="card" style="margin:14px 0"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px"><strong>MIDI-Player · SoundFont</strong><span id="sfState" class="small">bereit</span></div><div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center"><button id="sfPlay" type="button">▶︎</button><button id="sfStop" type="button">■</button><input id="sfSeek" type="range" min="0" max="1" step="0.01" value="0" style="width:100%"><span id="sfTime" class="small">0:00 / 0:00</span></div></section>
@@ -29,19 +28,19 @@
 <div class="status" id="status"></div>
 <section class="card" id="resultCard" hidden><strong id="title">Ergebnis</strong><div id="ideaWrap" hidden><label>Nachträgliche Kompositionsidee</label><div class="idea" id="idea"></div></div><div class="small" id="facts" style="margin-top:10px"></div></section>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
-<details><summary>API-Zugänge</summary><div class="small" style="margin:8px 0 10px">Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
+<details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
 <div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
 <dialog id="infoDialog"><div class="card infoPanel" style="margin:0;max-width:620px">
 <h2 style="margin-top:0">Minimal Composer</h2>
-<p><strong>App:</strong> v0.5.0<br><strong>Composition Engine:</strong> v1.0.0</p>
+<p><strong>App:</strong> v0.5.3<br><strong>Composition Engine:</strong> v1.0.0</p>
 <h3>Aktueller Stand</h3><p>Die bisher erprobte Kompositionspipeline ist als gemeinsames appübergreifendes Modul getrennt. Minimal Composer verwendet eine lokale Kopie der verbindlichen Composition Engine v1.0.0.</p>
 <h3>Neuerungen</h3><p>Engine und Oberfläche sind getrennt. API-Schlüssel bleiben bei normalen Backups ausgeschlossen; „Backup + Schlüssel“ speichert sie ausschließlich verschlüsselt. App- und Engine-Version werden getrennt ausgewiesen.</p>
 <h3>Jetzt zu testen</h3><p>Normales Backup enthält keine API-Schlüssel. „Backup + Schlüssel“ lässt sich mit Passwort wiederherstellen. Danach einen normalen Kompositionslauf einschließlich MIDI-Wiedergabe und MIDI-Download prüfen.</p>
 <div class="actions"><button id="infoClose" class="primary" type="button">Schließen</button></div></div></dialog>
 </main><script src="composition-engine.js?v=1.0.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.2';
+const APP_VERSION='0.5.3';
 const ENGINE_VERSION=window.CompositionEngine?.version||'unbekannt';
 const MODEL_CATALOG={
 openai:[
