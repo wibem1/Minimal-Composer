@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.5 · Composition Engine v1.0.1</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
+<div class="topline"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.6 · Composition Engine v1.1.0</div></div><button id="infoButton" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -33,14 +33,14 @@
 <div id="contractView" hidden></div>
 <dialog id="infoDialog"><div class="card infoPanel" style="margin:0;max-width:620px">
 <h2 style="margin-top:0">Minimal Composer</h2>
-<p><strong>App:</strong> v0.5.5<br><strong>Composition Engine:</strong> v1.0.0</p>
+<p><strong>App:</strong> v0.5.6<br><strong>Composition Engine:</strong> v1.1.0</p>
 <h3>Aktueller Stand</h3><p>Die bisher erprobte Kompositionspipeline ist als gemeinsames appübergreifendes Modul getrennt. Minimal Composer verwendet eine lokale Kopie der verbindlichen Composition Engine v1.0.1.</p>
 <h3>Neuerungen</h3><p>Engine und Oberfläche sind getrennt. API-Schlüssel bleiben bei normalen Backups ausgeschlossen; „Backup + Schlüssel“ speichert sie ausschließlich verschlüsselt. App- und Engine-Version werden getrennt ausgewiesen.</p>
 <h3>Jetzt zu testen</h3><p>Normales Backup enthält keine API-Schlüssel. „Backup + Schlüssel“ lässt sich mit Passwort wiederherstellen. Danach einen normalen Kompositionslauf einschließlich MIDI-Wiedergabe und MIDI-Download prüfen.</p>
 <div class="actions"><button id="infoClose" class="primary" type="button">Schließen</button></div></div></dialog>
-</main><script src="composition-engine.js?v=1.0.1"></script><script>
+</main><script src="composition-engine.js?v=1.1.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.5';
+const APP_VERSION='0.5.6';
 const ENGINE_VERSION=window.CompositionEngine?.version||'unbekannt';
 const MODEL_CATALOG={
 openai:[
@@ -132,7 +132,7 @@ async function renderHistory(){const series=(await all('series')).sort((a,b)=>b.
 async function restoreCurrent(runId){if(!runId)return;const r=await get('runs',runId);if(r)await showRun(r,false)}
 async function deleteRun(runId){if(!runId)return;const r=await get('runs',runId);if(!r)return;if(!confirm(`„${r.score?.title||r.input?.visibleTask||'Komposition'}“ wirklich aus dem Verlauf löschen?`))return;await remove('runs',runId);if(currentRun&&(currentRun.id===runId||currentRun.testId===runId)){currentRun=null;lastRequestSnapshot=null;currentMidiBlob=null;$('resultCard').hidden=true;$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=true;$('repeat').disabled=true}await saveWorkspace();await renderHistory();status.textContent='Testlauf gelöscht.'}
 async function loadRun(runId){const r=await get('runs',runId);if(!r)return;currentSeriesId=r.seriesId;provider.value=r.input.provider;setDefaultModel(r.input.model);task.value=r.input.visibleTask;await showRun(r,true);await refreshSeriesName();await saveWorkspace();await renderHistory();status.textContent='Testlauf aus dem Verlauf geladen.'}
-async function showRun(r,enableRepeat){currentRun=structuredClone(r);lastRequestSnapshot=r.requestSnapshot?structuredClone(r.requestSnapshot):null;const score=r.score;window.__minimalComposerCurrentScore=score||null;window.dispatchEvent(new CustomEvent('minimal-composer-score-loaded',{detail:{score:score||null,runId:r.id||r.testId||null}}));currentMidiBlob=score?new Blob([buildMidi(score)],{type:'audio/midi'}):null;$('resultCard').hidden=!score;if(score){$('title').textContent=score.title||'Komposition';const ts=Array.isArray(score.timeSignature)?score.timeSignature:[4,4],beatsPerBar=(Number(ts[0])||4)*(4/(Number(ts[1])||4));let end=0;for(const tr of(score.tracks||[]))for(const n of(tr.notes||[]))if(Array.isArray(n))end=Math.max(end,(Number(n[0])||0)+(Number(n[1])||0));const bars=Math.max(1,Math.ceil(end/Math.max(.25,beatsPerBar))),key=String(score.key||score.keySignature||score.tonality||'').trim()||'Tonart ?',p=r.input?.provider||r.requestSnapshot?.provider||'',m=r.input?.model||r.requestSnapshot?.model||'',ki=p==='anthropic'?'Claude':p==='google'?'Gemini':p==='openai'?'OpenAI':p;$('facts').textContent=`${score.bpm} BPM · ${key} · ${bars} Takte · ${[ki,m].filter(Boolean).join(' · ')} · ${score.tracks.length} Spur(en)`;$('ideaWrap').hidden=!r.idea;$('idea').textContent=r.idea||'';$('play').disabled=false;$('midi').disabled=false;$('diagnosis').disabled=false}else{$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=!r}$('repeat').disabled=!(enableRepeat&&lastRequestSnapshot);diagView.textContent=JSON.stringify(cleanRun(r),null,2)}
+async function showRun(r,enableRepeat){currentRun=structuredClone(r);lastRequestSnapshot=r.requestSnapshot?structuredClone(r.requestSnapshot):null;const score=r.score;window.__minimalComposerCurrentScore=score||null;window.dispatchEvent(new CustomEvent('minimal-composer-score-loaded',{detail:{score:score||null,runId:r.id||r.testId||null}}));currentMidiBlob=score?new Blob([buildMidi(score)],{type:'audio/midi'}):null;$('resultCard').hidden=!score;if(score){$('title').textContent=score.title||'Komposition';const profile=r.compositionProfile||null;$('facts').textContent=profile?[profile.bpm?profile.bpm+' BPM':'',profile.tempo||'',profile.key||'',profile.barCount?profile.barCount+' Takte':'',[profile.provider,profile.model].filter(Boolean).join(' · ')].filter(Boolean).join(' · '):`${score.tracks.length} Spur(en) · ${score.bpm} BPM · Test-ID ${r.testId}`;$('ideaWrap').hidden=!r.idea;$('idea').textContent=r.idea||'';$('play').disabled=false;$('midi').disabled=false;$('diagnosis').disabled=false}else{$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=!r}$('repeat').disabled=!(enableRepeat&&lastRequestSnapshot);diagView.textContent=JSON.stringify(cleanRun(r),null,2)}
 function cleanRun(r){const c=structuredClone(r);delete c.requestSnapshot;return c}
 function fullPrompt(v){return v.trim()}
 const {compose:composeWithEngine,TECHNICAL_CONTRACT,makeRequest,actualRequest,extractText,sha256Text,buildMidi}=window.CompositionEngine;
