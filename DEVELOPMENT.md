@@ -73,3 +73,7 @@ Auf Basis der gesicherten v0.5.12 wurden ausschließlich Interface-/Metadatenän
 
 ## 20.09.2026 – v0.5.14 Verlauf: Einzelkompositionen löschen
 Der bestätigte UI-Stand v0.5.13 wurde vor der Änderung als `reference-v0.5.13-ui` gesichert. Im Verlauf besitzt nun jeder einzelne Testlauf neben „Laden“ einen Button „Löschen“. Vor dem Löschen erfolgt eine Bestätigung. Gelöscht wird nur der betreffende Run aus dem lokalen IndexedDB-Store; wenn gerade dieser Run geladen ist, werden Ergebnis, Playerzustand und Wiederholungszustand sauber geleert. Engine-Build und musikalische Kompositionslogik bleiben unverändert bei Build 1.0.0.
+
+
+## 20.09.2026 – v0.5.15 gemeinsame Composition Engine v1.1.1
+Der funktionierende Minimal-Composer-Stand v0.5.14 wurde vor dem Umbau als `reference-v0.5.14-functional` gesichert. Anschließend wurde die lokale Engine-Datei vollständig durch den aktuellen Quellstand aus dem verbindlichen Repository `wibem1/Composition-Engine` ersetzt (Composition Engine v1.1.1, Source-Blob 09b0afd428dc7c7f01ba0b67c1f6f35ff0be141f). Damit übernimmt Minimal Composer wieder die gemeinsame Engine statt einer separat gepflegten älteren Kopie. Das Interface zeigt nun Engine v1.1.1 und verwendet für neue Läufe das in v1.1.0 eingeführte einheitliche Kompositionsprofil: BPM, musikalische Tempoangabe, Tonart, Taktanzahl, Provider/Modell und knappe musikalische Beschreibung. Der bestehende Verlauf bleibt kompatibel; bei älteren Runs ohne Profil wird auf die bisherigen BPM-/Spur- und Idea-Daten zurückgefallen. Neuer praktischer Teststand: Minimal Composer v0.5.15.
