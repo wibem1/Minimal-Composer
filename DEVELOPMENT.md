@@ -40,3 +40,12 @@ Die vollständige Kompositionsabfolge wird nun von `CompositionEngine.compose(..
 Bei der anschließenden direkten Prüfung gegen `reference-v0.4.24` wurde ein Escape-Unterschied in den ausgelagerten Prompt-Zeilenumbrüchen entdeckt: durch die erste Extraktion wären `\\n`-Zeichenfolgen statt echter per JavaScript-Escape erzeugter Zeilenumbrüche an das Modell gegangen. Dieser Fehler wurde vor einer Testfreigabe korrigiert. Danach wurden die drei zentralen Prompt-Ausdrücke (musical_draft, midi_translation, composition_idea_afterwards) direkt gegen v0.4.24 verglichen: exakt identisch. Provider-Endpunkte, Anthropic-midi_translation-Sonderbehandlung, Pipeline-Stufen und lokaler MIDI-Kern sind weiterhin vorhanden.
 
 Der Stand ist weiterhin nicht freigegeben; Syntax-/Browser-Smoke-Test und weitere Verhaltensprüfung stehen noch aus.
+
+
+## 20.09.2026 – Architektur der neuen Kompositionsengine festgelegt
+
+Nach den Hörvergleichen mit Suno wurde die innere Architektur der Engine neu gefasst und in `COMPOSITION_ENGINE_ARCHITECTURE.md` dokumentiert. Die zentrale Trennung lautet „Bauch – Kopf – Hand – Synthese“: Creative Composer, Musical Realizer, Technical Core, Provider Adapter und Composition Orchestrator.
+
+Wesentliche Entwicklungsregel: Mehr KI-Aufrufe, mehr Regeln und höhere Kosten gelten nicht als Qualitätsgewinn. Zusätzliche Komplexität wird nur übernommen, wenn ein kontrollierter Hörvergleich einen klaren musikalischen Mehrwert zeigt. Der erste Versuch soll daher klein bleiben und die neue klangorientierte Herangehensweise ohne Kontroll-KI, Originalitätsmetrik oder Regelkatalog testen.
+
+Die bestehende v0.4.24-Referenz und der geschützte Referenz-Branch bleiben unverändert. Die bereits laufende technische Modularisierung wird nicht verworfen; sie wird zur neutralen Grundlage, auf der austauschbare Komponierstrategien aufgebaut werden.
