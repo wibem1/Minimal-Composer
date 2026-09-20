@@ -56,3 +56,9 @@ Die bestehende v0.4.24-Referenz und der geschützte Referenz-Branch bleiben unve
 Als erster Codebaustein der neuen inneren Engine-Struktur wurde `engine/technical-core.js` angelegt. Er enthält ausschließlich die bereits vorhandene neutrale Technik: technischen Partiturvertrag, JSON-/Score-Auswertung, Hashing und deterministische MIDI-Erzeugung. Es wurden bewusst keine neuen musikalischen Regeln ergänzt.
 
 Der neue Technical Core ist in diesem Commit noch nicht in den Runtime-Pfad eingehängt. Das ist Absicht: Zuerst wird die Modulgrenze sauber hergestellt; erst danach wird die bisherige identische Implementierung aus `composition-engine.js` entfernt und durch den Technical Core ersetzt. So vermeiden wir einen gleichzeitigen Architektur- und Verhaltenswechsel und insbesondere Patch-/Override-Ketten.
+
+
+## 20.09.2026 – CI-Smoke-Test
+Für den Modular-Branch wurde ein reproduzierbarer Node-22-Smoke-Test eingerichtet. Der erste CI-Lauf scheiterte ausschließlich an einem fehlerhaft escapten regulären Ausdruck im neu angelegten Testskript; die Anwendung wurde dadurch nicht verändert. Nach Korrektur des Testskripts bestand GitHub Actions Lauf #2 (Run 35508539142) alle 28 statischen Prüfungen. Geprüft wurden u. a. Engine- und Inline-JavaScript-Syntax, Ladefolge Engine→Interface, sichtbare Modular-Version, Engine-Bridge, zentrale DOM-Elemente und Eventhandler, IndexedDB-Stores, MIDI-Kern, drei Kompositionsstufen, Anthropic-Sonderbehandlung, PWA-v0.5.0-Ladepfad und die Abwesenheit der Kompositionsprompts im Interface.
+
+Damit ist der statische technische Smoke-Test grün. Ein echter Browser-/Providerlauf mit API-Aufrufen und musikalischem Ergebnis ist davon ausdrücklich noch getrennt und muss praktisch geprüft werden.
