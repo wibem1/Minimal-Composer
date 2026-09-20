@@ -20,7 +20,7 @@
 </head>
 <body><main>
 <h1>Minimal Composer Testbench</h1>
-<div class="version">Version 0.4.24</div>
+<div class="version">Version 0.5.0</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
@@ -33,9 +33,9 @@
 <details><summary>API-Zugänge</summary><div class="small" style="margin:8px 0 10px">Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
 <div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
-</main><script>
+</main><script src="composition-engine.js?v=0.5.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.4.24';
+const APP_VERSION='0.5.0';
 const MODEL_CATALOG={
 openai:[
  ['gpt-6-astra','GPT-6 Astra'],
@@ -104,7 +104,7 @@ async function loadRun(runId){const r=await get('runs',runId);if(!r)return;curre
 async function showRun(r,enableRepeat){currentRun=structuredClone(r);lastRequestSnapshot=r.requestSnapshot?structuredClone(r.requestSnapshot):null;const score=r.score;window.__minimalComposerCurrentScore=score||null;window.dispatchEvent(new CustomEvent('minimal-composer-score-loaded',{detail:{score:score||null,runId:r.id||r.testId||null}}));currentMidiBlob=score?new Blob([buildMidi(score)],{type:'audio/midi'}):null;$('resultCard').hidden=!score;if(score){$('title').textContent=score.title||'Komposition';$('facts').textContent=`${score.tracks.length} Spur(en) · ${score.bpm} BPM · Test-ID ${r.testId}`;$('ideaWrap').hidden=!r.idea;$('idea').textContent=r.idea||'';$('play').disabled=false;$('midi').disabled=false;$('diagnosis').disabled=false}else{$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=!r}$('repeat').disabled=!(enableRepeat&&lastRequestSnapshot);diagView.textContent=JSON.stringify(cleanRun(r),null,2)}
 function cleanRun(r){const c=structuredClone(r);delete c.requestSnapshot;return c}
 function fullPrompt(v){return v.trim()}
-function makeRequest(p,m,promptText,stage){if(p==='openai')return{provider:p,model:m,url:'https://api.openai.com/v1/responses',method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer {{API_KEY}}'},body:{model:m,input:[{role:'user',content:[{type:'input_text',text:promptText}]}],store:false}};if(p==='anthropic'){const body={model:m,max_tokens:32768,messages:[{role:'user',content:promptText}]};if(/^claude-(?:sonnet|opus)-5(?:$|-)/i.test(m)&&stage==='midi_translation'){body.thinking={type:'disabled'};body.max_tokens=32768}return{provider:p,model:m,url:'https://api.anthropic.com/v1/messages',method:'POST',headers:{'Content-Type':'application/json','x-api-key':'{{API_KEY}}','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body};}return{provider:p,model:m,url:`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent?key={{API_KEY}}`,method:'POST',headers:{'Content-Type':'application/json'},body:{contents:[{role:'user',parts:[{text:promptText}]}]}}}
+const makeRequest=(...args)=>window.CompositionEngine.makeRequest(...args);
 function apiKeyFor(p){return p==='openai'?$('keyOpenAI').value.trim():p==='anthropic'?$('keyAnthropic').value.trim():$('keyGoogle').value.trim()}
 function actualRequest(s,key){const headers={...s.headers};let url=s.url;for(const k of Object.keys(headers)){if(typeof headers[k]==='string'&&headers[k].includes('{{API_KEY}}'))headers[k]=headers[k].replace('{{API_KEY}}',key)}url=url.replace('{{API_KEY}}',encodeURIComponent(key));return{url,headers,body:structuredClone(s.body)}}
 function extractText(p,j){if(p==='openai'){if(typeof j.output_text==='string')return j.output_text;const parts=[];for(const item of(j.output||[]))for(const c of(item.content||[]))if(typeof c.text==='string')parts.push(c.text);return parts.join('\n')}if(p==='anthropic')return(j.content||[]).filter(x=>x.type==='text').map(x=>x.text||'').join('\n');return(j.candidates||[]).flatMap(c=>c.content?.parts||[]).map(p=>p.text||'').join('\n')}
