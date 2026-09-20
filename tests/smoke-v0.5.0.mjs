@@ -1,6 +1,6 @@
 import fs from 'node:fs';import vm from 'node:vm';
 const html=fs.readFileSync('index.html','utf8'),engine=fs.readFileSync('composition-engine.js','utf8');
-const inline=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]);
+const inline=html.split('<script>').slice(1).map(x=>x.split('</script>')[0]);
 const checks=[];const ok=(name,value)=>{if(!value)throw new Error('FAIL: '+name);checks.push(name)};
 new vm.Script(engine,{filename:'composition-engine.js'});ok('engine syntax',true);inline.forEach((s,i)=>new vm.Script(s,{filename:'index-inline-'+(i+1)+'.js'}));ok('inline script syntax',true);
 ok('engine loaded before interface',html.indexOf('composition-engine.js?v=0.5.0')<html.indexOf("const APP_VERSION='0.5.0'"));
