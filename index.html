@@ -7,20 +7,20 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.5.0" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.5.0" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.5.0" />
+<link rel="manifest" href="manifest.webmanifest?v=0.5.11" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.5.11" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.5.11" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Minimal Composer Modular</title>
+<title>Minimal Composer</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light dark}*{box-sizing:border-box}body{margin:0;background:Canvas;color:CanvasText}main{max-width:980px;margin:0 auto;padding:28px 20px 60px}h1{font-size:24px;margin:0 0 4px}.version{font-size:12px;opacity:.62;margin-bottom:5px}.sub{opacity:.65;margin-bottom:22px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.seriesbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin:14px 0 18px}.seriesname{font-weight:700}.small{font-size:12px;opacity:.68;line-height:1.45}label{display:block;font-size:13px;font-weight:650;margin:14px 0 7px}textarea,input,select,button{font:inherit}textarea,input,select{width:100%;border:1px solid color-mix(in srgb,CanvasText 22%,transparent);border-radius:9px;background:Canvas;padding:10px;color:CanvasText}textarea{min-height:120px;resize:vertical;line-height:1.45}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}button{border:1px solid color-mix(in srgb,CanvasText 24%,transparent);border-radius:9px;padding:9px 14px;background:color-mix(in srgb,CanvasText 7%,Canvas);color:CanvasText;cursor:pointer}button.primary{background:CanvasText;color:Canvas;border-color:CanvasText;font-weight:700}button:disabled{opacity:.4;cursor:default}.status{margin:14px 0 0;min-height:24px;font-size:14px}.status.composing{color:#16803a;font-weight:700}.card{margin-top:22px;padding:16px;border:1px solid color-mix(in srgb,CanvasText 16%,transparent);border-radius:12px}.idea{white-space:pre-wrap;line-height:1.5}details{margin-top:22px;border-top:1px solid color-mix(in srgb,CanvasText 14%,transparent);padding-top:14px}summary{cursor:pointer;font-weight:650}.diag{max-height:300px;overflow:auto;white-space:pre-wrap;background:color-mix(in srgb,CanvasText 5%,Canvas);padding:10px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px}.api-key{-webkit-text-security:disc}.history{display:flex;flex-direction:column;gap:14px;margin-top:12px}.series{border:1px solid color-mix(in srgb,CanvasText 14%,transparent);border-radius:10px;padding:12px}.serieshead{display:flex;justify-content:space-between;gap:12px;align-items:center}.runs{display:flex;flex-direction:column;gap:7px;margin-top:10px}.run{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:color-mix(in srgb,CanvasText 5%,Canvas)}.runmain{min-width:0}.runtitle{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.runmeta{font-size:11px;opacity:.65;margin-top:2px}.empty{font-size:13px;opacity:.6;padding:8px 0}@media(max-width:700px){.row{grid-template-columns:1fr}.seriesbar{grid-template-columns:1fr}.serieshead{align-items:flex-start;flex-direction:column}.run{grid-template-columns:1fr}main{padding:20px 14px 40px}}
 </style>
 </head>
 <body><main>
-<h1>Minimal Composer Modular</h1>
-<div class="version">Version 0.5.0</div>
+<h1>Minimal Composer</h1>
+<div class="version">Version 0.5.11</div>
 <div class="sub">Ein Auftrag → freier musikalischer Entwurf → MIDI-Übersetzung → Partitur → MIDI → nachträgliche Kompositionsidee. Jeder KI-Aufruf wird vollständig protokolliert.</div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div></div>
 <div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
@@ -33,9 +33,9 @@
 <details><summary>API-Zugänge</summary><div class="small" style="margin:8px 0 10px">Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
 <div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
-</main><script src="composition-engine.js?v=0.5.0"></script><script>
+</main><script src="composition-engine.js?v=0.5.11"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.0';
+const APP_VERSION='0.5.11';
 const MODEL_CATALOG={
 openai:[
  ['gpt-6-astra','GPT-6 Astra'],
@@ -142,6 +142,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(()=>
 </script>
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.0',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.11',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
