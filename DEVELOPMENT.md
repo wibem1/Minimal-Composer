@@ -81,3 +81,7 @@ Der funktionierende Minimal-Composer-Stand v0.5.14 wurde vor dem Umbau als `refe
 
 ## 20.09.2026 – v0.5.16 Verlauf: Provider/Modell synchronisieren
 Beim Laden eines gespeicherten Runs wurde bisher zuerst der Provider gesetzt und anschließend nur der Modellwert zugewiesen. Da programmatisches Setzen eines Select-Werts kein change-Ereignis auslöst, blieb die zuvor aufgebaute Modellliste bestehen. Dadurch konnte z. B. Anthropic zusammen mit GPT-5.6 Sol angezeigt werden. `loadRun()` baut nun nach Setzen des gespeicherten Providers mit `setDefaultModel(r.input.model)` die zugehörige Modellliste neu auf und wählt erst danach das gespeicherte Modell. Composition Engine v1.1.1 und Kompositionslogik bleiben unverändert.
+
+
+## 20.09.2026 – v0.5.17 / Composition Engine v1.1.2 – Profilfehler behoben
+Ursachenprüfung gegen das zentrale Repository `wibem1/Composition-Engine`: v1.1.1 enthielt bereits die Funktion `compositionProfile(...)` und die v1.1.0-Dokumentation verlangte das einheitliche Profil, aber `compose()` rief diese Funktion nach `composition_idea_afterwards` nicht auf. Dadurch wurde weiterhin nur `run.idea` gespeichert; `run.profile` fehlte vollständig. Vor der Engine-Korrektur wurde der Stand als `reference-v1.1.1-broken-profile` im Engine-Repository gesichert. Engine v1.1.2 erzeugt und speichert nun `run.profile=compositionProfile(snapshot,score,draft,run.idea)` und protokolliert `composition_profile_created`. Minimal Composer übernimmt diesen zentralen Engine-Stand unverändert. Neuer Teststand: v0.5.17.
