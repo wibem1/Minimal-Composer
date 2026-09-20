@@ -69,3 +69,7 @@ Minimal Composer Modular wurde als regulärer Minimal Composer übernommen. Die 
 
 ## 20.09.2026 – v0.5.13 Interface-Umbau
 Auf Basis der gesicherten v0.5.12 wurden ausschließlich Interface-/Metadatenänderungen vorgenommen. Der Einführungstext unter dem Titel wurde entfernt. Backup, verschlüsseltes Backup, Backup-Import, neue Testserie und API-Schlüssel befinden sich nun gemeinsam in der Rubrik `Technisches`. Oben werden App-Version und `Composition Engine Build 1.0.0` angezeigt. Ein Info-Button öffnet einen Dialog mit aktuellem Stand, Neuerungen und den jeweils zu prüfenden Funktionen. Die Composition Engine erhielt nur die exportierte Buildkennung `1.0.0`; Prompts, Pipeline und musikalische Logik wurden nicht verändert. Neuer Teststand: Minimal Composer v0.5.13.
+
+
+## 20.09.2026 – v0.5.14 Verlauf: Einzelkompositionen löschen
+Der bestätigte UI-Stand v0.5.13 wurde vor der Änderung als `reference-v0.5.13-ui` gesichert. Im Verlauf besitzt nun jeder einzelne Testlauf neben „Laden“ einen Button „Löschen“. Vor dem Löschen erfolgt eine Bestätigung. Gelöscht wird nur der betreffende Run aus dem lokalen IndexedDB-Store; wenn gerade dieser Run geladen ist, werden Ergebnis, Playerzustand und Wiederholungszustand sauber geleert. Engine-Build und musikalische Kompositionslogik bleiben unverändert bei Build 1.0.0.
