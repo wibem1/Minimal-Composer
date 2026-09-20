@@ -49,3 +49,10 @@ Nach den Hörvergleichen mit Suno wurde die innere Architektur der Engine neu ge
 Wesentliche Entwicklungsregel: Mehr KI-Aufrufe, mehr Regeln und höhere Kosten gelten nicht als Qualitätsgewinn. Zusätzliche Komplexität wird nur übernommen, wenn ein kontrollierter Hörvergleich einen klaren musikalischen Mehrwert zeigt. Der erste Versuch soll daher klein bleiben und die neue klangorientierte Herangehensweise ohne Kontroll-KI, Originalitätsmetrik oder Regelkatalog testen.
 
 Die bestehende v0.4.24-Referenz und der geschützte Referenz-Branch bleiben unverändert. Die bereits laufende technische Modularisierung wird nicht verworfen; sie wird zur neutralen Grundlage, auf der austauschbare Komponierstrategien aufgebaut werden.
+
+
+## 20.09.2026 – Implementierung begonnen: Technical Core
+
+Als erster Codebaustein der neuen inneren Engine-Struktur wurde `engine/technical-core.js` angelegt. Er enthält ausschließlich die bereits vorhandene neutrale Technik: technischen Partiturvertrag, JSON-/Score-Auswertung, Hashing und deterministische MIDI-Erzeugung. Es wurden bewusst keine neuen musikalischen Regeln ergänzt.
+
+Der neue Technical Core ist in diesem Commit noch nicht in den Runtime-Pfad eingehängt. Das ist Absicht: Zuerst wird die Modulgrenze sauber hergestellt; erst danach wird die bisherige identische Implementierung aus `composition-engine.js` entfernt und durch den Technical Core ersetzt. So vermeiden wir einen gleichzeitigen Architektur- und Verhaltenswechsel und insbesondere Patch-/Override-Ketten.
