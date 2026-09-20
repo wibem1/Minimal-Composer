@@ -1,0 +1,17 @@
+import fs from 'node:fs';import vm from 'node:vm';
+const html=fs.readFileSync('index.html','utf8'),engine=fs.readFileSync('composition-engine.js','utf8');
+const inline=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]);
+const checks=[];const ok=(name,value)=>{if(!value)throw new Error('FAIL: '+name);checks.push(name)};
+new vm.Script(engine,{filename:'composition-engine.js'});ok('engine syntax',true);inline.forEach((s,i)=>new vm.Script(s,{filename:'index-inline-'+(i+1)+'.js'}));ok('inline script syntax',true);
+ok('engine loaded before interface',html.indexOf('composition-engine.js?v=0.5.0')<html.indexOf("const APP_VERSION='0.5.0'"));
+ok('visible modular version',html.includes('Minimal Composer Modular')&&html.includes('Version 0.5.0'));
+ok('engine API bridge',html.includes('compose:composeWithEngine')&&engine.includes('async function compose('));
+for(const id of ['provider','model','task','compose','repeat','play','stop','midi','diagnosis','history','backupExport','backupSecure','backupImport','newSeries'])ok('DOM '+id,new RegExp('id=["\\\']'+id+'["\\\']').test(html));
+ok('compose handler',html.includes("$('compose').addEventListener('click'"));ok('repeat handler',html.includes("$('repeat').addEventListener('click'"));ok('diagnosis handler',html.includes("$('diagnosis').addEventListener('click'"));
+ok('IndexedDB stores',html.includes("createObjectStore('series'")&&html.includes("createObjectStore('runs'")&&html.includes("createObjectStore('meta'"));
+ok('MIDI core',engine.includes("chunk('MThd'")&&engine.includes("chunk('MTrk'"));
+ok('three stages',engine.includes("'musical_draft'")&&engine.includes("'midi_translation'")&&engine.includes("'composition_idea_afterwards'"));
+ok('Anthropic translation exception',engine.includes("stage==='midi_translation'")&&engine.includes("body.thinking={type:'disabled'}"));
+ok('PWA v0.5.0',html.includes("service-worker.js?v=0.5.0"));
+ok('no prompt text in interface',!html.includes('Komponiere das verlangte Stück musikalisch frei und eigenständig'));
+console.log('PASS '+checks.length+' checks');for(const x of checks)console.log('✓ '+x);
