@@ -12,6 +12,6 @@ ok('IndexedDB stores',html.includes("createObjectStore('series'")&&html.includes
 ok('MIDI core',engine.includes("chunk('MThd'")&&engine.includes("chunk('MTrk'"));
 ok('three stages',engine.includes("'musical_draft'")&&engine.includes("'midi_translation'")&&engine.includes("'composition_idea_afterwards'"));
 ok('Anthropic translation exception',engine.includes("stage==='midi_translation'")&&engine.includes("body.thinking={type:'disabled'}"));
-ok('PWA v0.5.0',html.includes("service-worker.js?v=0.5.0"));
+ok('PWA v0.5.0',html.includes("service-worker.js?v=0.5.0")&&html.includes("manifest.webmanifest?v=0.5.0"));
 ok('no prompt text in interface',!html.includes('Komponiere das verlangte Stück musikalisch frei und eigenständig'));
 console.log('PASS '+checks.length+' checks');for(const x of checks)console.log('✓ '+x);
