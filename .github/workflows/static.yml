@@ -38,7 +38,7 @@ jobs:
       - name: Startup smoke test
         shell: bash
         run: |
-          grep -q "Version 0.5.28" index.html
+          grep -q "Version 0.5.29" index.html
           grep -q "id=\"compose\"" index.html
           grep -q "id=\"model\"" index.html
           grep -q "function setDefaultModel" index.html
