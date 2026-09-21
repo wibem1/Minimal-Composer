@@ -95,7 +95,8 @@ function setDefaultModel(force=null){
  for(const [value,label] of catalog){const o=document.createElement('option');o.value=value;o.textContent=label;model.appendChild(o)}
  model.value=wanted;
 }
-provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());engineSelect.addEventListener('change',()=>{updateEngineInfo();saveWorkspace()});$('contractView').textContent=window.CompositionEngine.TECHNICAL_CONTRACT;
+setDefaultModel();
+provider.addEventListener('change',async()=>{setDefaultModel();if(db)await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);if(db)await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());engineSelect.addEventListener('change',()=>{updateEngineInfo();saveWorkspace()});$('contractView').textContent=window.CompositionEngine.TECHNICAL_CONTRACT;
 async function newSeries(){let name=prompt('Name der neuen Testserie:',nowName());if(name===null)return;name=name.trim()||nowName();const s={id:makeId('S'),name,createdAt:iso()};await put('series',s);currentSeriesId=s.id;currentRun=null;lastRequestSnapshot=null;currentMidiBlob=null;task.value='';$('resultCard').hidden=true;$('play').disabled=true;$('midi').disabled=true;$('diagnosis').disabled=true;$('repeat').disabled=true;diagView.textContent='Noch kein Testlauf.';status.textContent='Neue Testserie begonnen. Frühere Serien bleiben im Verlauf erhalten.';await saveWorkspace();await refreshSeriesName();await renderHistory()}
 $('backupExport').addEventListener('click',()=>exportBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
 $('backupSecure').addEventListener('click',()=>exportSecureBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
