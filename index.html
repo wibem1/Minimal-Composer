@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.5.30" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.5.30" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.5.30" />
+<link rel="manifest" href="manifest.webmanifest?v=0.5.31" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.5.31" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.5.31" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.30 · wählbare Composition Engine</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.5.31 · wählbare Composition Engine</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label for="engineSelect">Composition Engine</label><select id="engineSelect"><option value="standard">v1.1.2 – Standard</option><option value="sound-first">v1.2 Experimental – Sound-first</option></select></div><div></div></div><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -29,12 +29,12 @@
 <section class="card" id="resultCard" hidden><strong id="title">Ergebnis</strong><div id="ideaWrap" hidden><label>Kompositionsbeschreibung</label><div class="idea" id="idea"></div></div><div class="small" id="facts" style="margin-top:10px"></div></section>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.5.30</strong><br>Composition Engine v1.1.2 Standard / v1.2 Experimental</p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Minimal Composer kann pro Kompositionslauf zwischen der stabilen Referenz-Engine und der experimentellen Sound-first-Engine wählen. MIDI-Übersetzung und technische MIDI-Erzeugung bleiben in beiden Varianten gleich.</p><h3>Neu in dieser Version</h3><p>Fehler und Zeitüberschreitungen einer KI-Stufe werden jetzt mit der betroffenen Stufe protokolliert und eindeutig angezeigt. Bereits protokollierte frühere Stufen bleiben in der Diagnosedatei erhalten. Die Composition Engines und ihre musikalischen Prompts bleiben unverändert.</p><h3>Zu testen</h3><p>Nach Neustart muss zu jedem KI-Anbieter ausschließlich ein passendes Modell erscheinen. Bitte einen älteren Lauf aus dem Verlauf laden und prüfen, ob KI-Anbieter und Modell zusammenpassen. Danach eine neue Komposition erstellen und das vollständige Kompositionsprofil prüfen.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
-<dialog id="promptsDialog"><h2>KI-Aufträge</h2><div class="small" style="margin-bottom:12px">Exakt die Texte, die in diesem Lauf an die KI gesendet wurden.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.5.31</strong><br>Composition Engine v1.1.2 Standard / v1.2 Experimental</p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Minimal Composer kann pro Kompositionslauf zwischen der stabilen Referenz-Engine und der experimentellen Sound-first-Engine wählen. MIDI-Übersetzung und technische MIDI-Erzeugung bleiben in beiden Varianten gleich.</p><h3>Neu in dieser Version</h3><p>Fehler und Zeitüberschreitungen einer KI-Stufe werden jetzt mit der betroffenen Stufe protokolliert und eindeutig angezeigt. Bereits protokollierte frühere Stufen bleiben in der Diagnosedatei erhalten. Die Composition Engines und ihre musikalischen Prompts bleiben unverändert.</p><h3>Zu testen</h3><p>Nach Neustart muss zu jedem KI-Anbieter ausschließlich ein passendes Modell erscheinen. Bitte einen älteren Lauf aus dem Verlauf laden und prüfen, ob KI-Anbieter und Modell zusammenpassen. Danach eine neue Komposition erstellen und das vollständige Kompositionsprofil prüfen.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="promptsDialog" class="infoDialog"><h2>KI-Aufträge</h2><div class="small" style="margin-bottom:12px">Exakt die Texte, die in diesem Lauf an die KI gesendet wurden.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
 </main><script src="composition-engine.js?v=1.1.2"></script><script>window.CompositionEngines={standard:window.CompositionEngine};</script><script src="https://wibem1.github.io/Composition-Engine/composition-engine-experimental.js?channel=experimental"></script><script>window.CompositionEngines.soundFirst=window.CompositionEngine;window.CompositionEngine=window.CompositionEngines.standard;</script><script>
 (()=>{'use strict';
-const APP_VERSION='0.5.30';
+const APP_VERSION='0.5.31';
 const ENGINE_BUILD=window.CompositionEngine?.BUILD||'1.0.0';
 const MODEL_CATALOG={
 openai:[
@@ -129,7 +129,9 @@ function safeName(s){return String(s||'Komposition').replace(/[\\/:*?"<>|]+/g,'_
 $('midi').addEventListener('click',()=>{if(currentRun?.score)download(new Blob([buildMidi(currentRun.score)],{type:'audio/midi'}),`${safeName(currentRun.score.title||'Komposition')}_${currentRun.testId}.mid`)});
 $('diagnosis').addEventListener('click',()=>{if(!currentRun)return;download(new Blob([JSON.stringify(cleanRun(currentRun),null,2)],{type:'application/json'}),`MinimalComposer-Diagnose-${currentRun.testId}.json`)});
 $('prompts').addEventListener('click',()=>{if(!currentRun?.aiCalls?.length)return;const view=$('promptsView');view.innerHTML='';for(const call of currentRun.aiCalls){const section=document.createElement('section');section.className='card';const h=document.createElement('strong');h.textContent=call.stage||'KI-Auftrag';const pre=document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.style.wordBreak='break-word';pre.style.fontFamily='inherit';pre.style.fontSize='14px';pre.textContent=(call.request?.body?.input||[]).flatMap(x=>x?.content||[]).filter(x=>x?.type==='input_text').map(x=>x.text||'').join('\n\n')||'(Kein Textprompt gespeichert)';section.append(h,pre);view.appendChild(section)}$('promptsDialog').showModal()});
-$('promptsClose').addEventListener('click',()=>$('promptsDialog').close());
+$('promptsClose').addEventListener('click',e=>{e.preventDefault();const d=$('promptsDialog');if(d?.open)d.close()});
+$('promptsDialog').addEventListener('click',e=>{const d=e.currentTarget;if(e.target===d)d.close()});
+$('promptsDialog').addEventListener('cancel',e=>{e.preventDefault();e.currentTarget.close()});
 (async()=>{try{db=await openDB();await ensureSeries();status.textContent='Arbeitsstand wiederhergestellt.'}catch(e){status.textContent='Speicherfehler: '+e.message}})();
 })();
 </script><script>
@@ -181,6 +183,6 @@ fetch(MANIFEST,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Manifest '
 </script>
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.30',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.5.31',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
