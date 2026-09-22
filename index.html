@@ -87,8 +87,8 @@ async function ensureSeries(){const m=await get('meta','workspace');if(m?.value?
 async function saveWorkspace(){await put('meta',{key:'workspace',value:{currentSeriesId,currentRunId:currentRun?.testId||null,provider:provider.value,model:model.value.trim(),task:task.value,engine:engineSelect.value}})}
 async function refreshSeriesName(){const s=await get('series',currentSeriesId);$('seriesName').textContent=s?.name||'–'}
 const API_KEY_NAMES=['OpenAI','Anthropic','Google'];
-API_KEY_NAMES.forEach(n=>{const el=$('key'+n);el.value=localStorage.getItem('mct_key_'+n.toLowerCase())||'';el.addEventListener('input',async()=>{const name=n.toLowerCase(),value=el.value;localStorage.setItem('mct_key_'+name,value);if(db)try{await put('meta',{key:'api_key_'+name,value})}catch(_){}})});
-async function restoreApiKeys(){for(const n of API_KEY_NAMES){const name=n.toLowerCase(),el=$('key'+n),local=localStorage.getItem('mct_key_'+name)||'',stored=(await get('meta','api_key_'+name))?.value||'',value=local||stored||'';el.value=value;if(value){localStorage.setItem('mct_key_'+name,value);await put('meta',{key:'api_key_'+name,value})}}}
+API_KEY_NAMES.forEach(n=>{const el=$('key'+n),name=n.toLowerCase();const existing=localStorage.getItem('mct_key_'+name);if(existing)el.value=existing;el.addEventListener('input',async()=>{const value=el.value;if(!value)return;localStorage.setItem('mct_key_'+name,value);if(db)try{await put('meta',{key:'api_key_'+name,value})}catch(_){}})});
+async function restoreApiKeys(){for(const n of API_KEY_NAMES){const name=n.toLowerCase(),el=$('key'+n),local=localStorage.getItem('mct_key_'+name)||'',stored=(await get('meta','api_key_'+name))?.value||'',value=local||stored||el.value||'';if(value){el.value=value;localStorage.setItem('mct_key_'+name,value);await put('meta',{key:'api_key_'+name,value})}}}
 function setDefaultModel(force=null){
  const catalog=MODEL_CATALOG[provider.value]||[];
  const allowed=new Set(catalog.map(([value])=>value));
