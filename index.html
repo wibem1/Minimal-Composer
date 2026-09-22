@@ -250,12 +250,12 @@ async function reflectionModelCall(snapshot,key,promptText,stage){
 }
 async function analyzeForImprovement(){
  if(!currentRun?.score)throw new Error('Bitte zuerst eine fertige Komposition laden.');
- let snapshot=currentRun.requestSnapshot||lastRequestSnapshot;
- if(!snapshot){
-   const p=provider.value,m=model.value.trim();
-   if(!m)throw new Error('Bitte ein Modell angeben.');
-   snapshot={provider:p,model:m,visibleTask:'Analyse der geladenen Partitur',engine:engineSelect.value};
- }
+ const snapshot={
+   provider:provider.value,
+   model:model.value.trim(),
+   engine:engineSelect.value
+ };
+ if(!snapshot.model)throw new Error('Bitte ein Modell angeben.');
  const key=apiKeyFor(snapshot.provider);if(!key)throw new Error('API-Key für '+snapshot.provider+' fehlt.');
  const sourceScore=structuredClone(window.__minimalComposerCurrentScore||currentRun.score),scoreForCritique=JSON.stringify(scoreToCompact(sourceScore));
  const prompt='Beurteile die folgende tatsächlich erzeugte Partitur kritisch als musikalisches Werk. Identifiziere selbstständig ihre wesentlichen Stärken und Schwächen und entscheide, ob und wo Änderungen einen deutlichen musikalischen Gewinn bringen würden. Begründe konkrete Verbesserungsvorschläge anhand der Partitur. Bewahre ungewöhnliche oder eigenwillige Lösungen, wenn sie musikalisch überzeugen. Du erhältst absichtlich nicht den ursprünglichen Kompositionsentwurf: Gegenstand der Beurteilung ist ausschließlich das musikalische Ergebnis. Beginne zwingend mit genau einer Zeile "URTEIL: ÄNDERN" oder "URTEIL: BEHALTEN". Danach folgt die Beurteilung und gegebenenfalls der konkrete Verbesserungsvorschlag.\n\nTATSÄCHLICHE PARTITUR:\n'+scoreForCritique+'\n\nFORMAT DER PARTITUR:\n'+window.CompositionEngines.standard.TECHNICAL_CONTRACT;
