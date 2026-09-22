@@ -246,6 +246,8 @@ $('compose').addEventListener('click',async()=>{stopPlayback();setBusy(true);sta
 async function reflectionModelCall(snapshot,key,promptText,stage){
  const engine=window.MinimalComposerEngineResolver&&snapshot.engine!=='standard'&&snapshot.engine!=='sound-first'?await window.MinimalComposerEngineResolver(snapshot.engine):engineFor(snapshot.engine||'standard');
  const templ=engine.makeRequest(snapshot.provider,snapshot.model,promptText,stage),req=engine.actualRequest(templ,key),bodyText=JSON.stringify(req.body),bodyHash=await engine.sha256Text(bodyText),rec={stage,request:{at:iso(),url:templ.url,method:'POST',headers:redactHeaders(templ.headers),body:req.body,bodySha256:bodyHash,authNote:'API-Schlüssel absichtlich nicht gespeichert.'}};
+ if(!Array.isArray(currentRun.aiCalls))currentRun.aiCalls=[];
+ if(!Array.isArray(currentRun.events))currentRun.events=[];
  currentRun.aiCalls.push(rec);currentRun.events.push({at:iso(),phase:'ai_request_frozen',stage,bodySha256:bodyHash,inputCharacters:promptText.length});const started=performance.now(),res=await fetch(req.url,{method:'POST',headers:req.headers,body:bodyText}),raw=await res.text();rec.response={receivedAt:iso(),elapsedMs:Math.round(performance.now()-started),status:res.status,statusText:res.statusText,rawBody:raw};if(!res.ok)throw new Error('API '+res.status+': '+raw.slice(0,500));const jr=JSON.parse(raw),text=engine.extractText(snapshot.provider,jr);rec.response.extractedModelText=text;currentRun.events.push({at:iso(),phase:'ai_model_text_extracted',stage,characters:text.length});return{text,engine}
 }
 async function analyzeForImprovement(){
