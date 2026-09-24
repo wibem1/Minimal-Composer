@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.7.0" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.7.0" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.7.0" />
+<link rel="manifest" href="manifest.webmanifest?v=0.7.1" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.7.1" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.7.1" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.7.0 · Composition Engine 2.2</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.7.1 · Composition Engine 2.2</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label for="engineSelect">Composition Engine</label><select id="engineSelect"><option value="engine-2.2">Composition Engine 2.2</option></select></div><div></div></div><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -30,12 +30,12 @@
 <details id="notationDetails"><summary>Noten</summary><div class="actions" style="margin:10px 0"><button id="abcCopy" disabled>ABC kopieren</button></div><div id="notationView" class="card"><div class="small">Noch keine Komposition geladen.</div></div></details>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.7.0</strong><br>Composition Engines · Standard / Sound-first / Klangvorstellung 1.4</p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Minimal Composer kann pro Kompositionslauf zwischen Standard, Sound-first und dem neuen Klangvorstellungs-Experiment wählen.</p><h3>Neu in dieser Version</h3><p>Neue Engine „Klangvorstellung – Experiment 1.4“: Der erste KI-Schritt darf keine Notation oder technische Codierung erzeugen. Erst der zweite Schritt realisiert die vollständige Partitur.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol exakt denselben Auftrag wie zuvor verwenden: „Komponiere ein Klavierstück von 32 Takten im Stil von Beethoven.“ Danach musikalisch mit Standard und MIDI Agent vergleichen.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.7.1</strong><br>Composition Engines · Standard / Sound-first / Klangvorstellung 1.4</p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Minimal Composer kann pro Kompositionslauf zwischen Standard, Sound-first und dem neuen Klangvorstellungs-Experiment wählen.</p><h3>Neu in dieser Version</h3><p>Neue Engine „Klangvorstellung – Experiment 1.4“: Der erste KI-Schritt darf keine Notation oder technische Codierung erzeugen. Erst der zweite Schritt realisiert die vollständige Partitur.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol exakt denselben Auftrag wie zuvor verwenden: „Komponiere ein Klavierstück von 32 Takten im Stil von Beethoven.“ Danach musikalisch mit Standard und MIDI Agent vergleichen.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
 <dialog id="promptsDialog" class="infoDialog"><h2>Kommunikationsprotokoll</h2><div class="small" style="margin-bottom:12px">Kompaktes Protokoll der KI-Aufrufe. Wiederholte große Nutzdaten werden nur als Vorschau angezeigt.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
-</main><script src="abc-import.js?v=0.7.0"></script><script src="composition-engine-v2.2.js?v=0.7.0"></script><script>
+</main><script src="abc-import.js?v=0.7.1"></script><script src="composition-engine-v2.2.js?v=0.7.1"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.7.0';
+const APP_VERSION='0.7.1';
 const ENGINE_BUILD=window.CompositionEngine?.BUILD||22;
 const MODEL_CATALOG={
 openai:[
@@ -169,7 +169,7 @@ async function loadScoreAsRun(score,source){currentRun=createLoadedRun(score,sou
 async function importMidiFile(file){const score=parseMidiFile(await file.arrayBuffer(),file.name);await loadScoreAsRun(score,{type:'midi',fileName:file.name,bytes:file.size});status.textContent='MIDI-Datei geladen. Sie kann jetzt analysiert werden.'}
 function scoreToCompact(score){const ts=Array.isArray(score?.timeSignature)?score.timeSignature:[4,4],beats=(Number(ts[0])||4)*(4/(Number(ts[1])||4));return{t:String(score?.title||''),b:Number(score?.bpm)||120,m:ts,v:(score?.tracks||[]).map((tr,i)=>[String(tr.name||('Track '+(i+1))),Number(tr.program)||0,Number.isFinite(Number(tr.channel))?Number(tr.channel):i,(tr.notes||[]).map(n=>{const st=Number(n[0])||0,bar=Math.floor(st/beats)+1,pos=+(st-(bar-1)*beats).toFixed(6),a=[bar,pos,Number(n[1])||.25,Math.round(Number(n[2])||60),Math.round(Number(n[3])||80)];if(typeof n[4]==='string'&&n[4])a.push(n[4]);return a})])}}
 function fullPrompt(v){return v.trim()}
-const {buildMidi}=window.CompositionEngines.standard;
+const {buildMidi}=window.CompositionEngine;
 $('midiLoad').addEventListener('click',()=>$('midiLoadFile').click());$('midiLoadFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{stopPlayback();status.textContent='MIDI-Datei wird geladen …';await importMidiFile(file)}catch(err){status.textContent='MIDI-Ladefehler: '+err.message}finally{e.target.value=''}});
 function apiKeyFor(p){return p==='openai'?$('keyOpenAI').value.trim():p==='anthropic'?$('keyAnthropic').value.trim():$('keyGoogle').value.trim()}
 function redactHeaders(h){const o={};Object.entries(h).forEach(([k,v])=>o[k]=/authorization|api-key|x-api-key/i.test(k)?'[REDACTED]':v);return o}
@@ -262,7 +262,7 @@ async function analyzeForImprovement(){
  if(!snapshot.model)throw new Error('Bitte ein Modell angeben.');
  const key=apiKeyFor(snapshot.provider);if(!key)throw new Error('API-Key für '+snapshot.provider+' fehlt.');
  const sourceScore=structuredClone(window.__minimalComposerCurrentScore||currentRun.score),scoreForCritique=JSON.stringify(scoreToCompact(sourceScore));
- const prompt='Beurteile die folgende tatsächlich erzeugte Partitur kritisch als musikalisches Werk. Identifiziere selbstständig ihre wesentlichen Stärken und Schwächen und entscheide, ob und wo Änderungen einen deutlichen musikalischen Gewinn bringen würden. Begründe konkrete Verbesserungsvorschläge anhand der Partitur. Bewahre ungewöhnliche oder eigenwillige Lösungen, wenn sie musikalisch überzeugen. Du erhältst absichtlich nicht den ursprünglichen Kompositionsentwurf: Gegenstand der Beurteilung ist ausschließlich das musikalische Ergebnis. Beginne zwingend mit genau einer Zeile "URTEIL: ÄNDERN" oder "URTEIL: BEHALTEN". Danach folgt die Beurteilung und gegebenenfalls der konkrete Verbesserungsvorschlag.\n\nTATSÄCHLICHE PARTITUR:\n'+scoreForCritique+'\n\nFORMAT DER PARTITUR:\n'+window.CompositionEngines.standard.TECHNICAL_CONTRACT;
+ const prompt='Beurteile die folgende tatsächlich erzeugte Partitur kritisch als musikalisches Werk. Identifiziere selbstständig ihre wesentlichen Stärken und Schwächen und entscheide, ob und wo Änderungen einen deutlichen musikalischen Gewinn bringen würden. Begründe konkrete Verbesserungsvorschläge anhand der Partitur. Bewahre ungewöhnliche oder eigenwillige Lösungen, wenn sie musikalisch überzeugen. Du erhältst absichtlich nicht den ursprünglichen Kompositionsentwurf: Gegenstand der Beurteilung ist ausschließlich das musikalische Ergebnis. Beginne zwingend mit genau einer Zeile "URTEIL: ÄNDERN" oder "URTEIL: BEHALTEN". Danach folgt die Beurteilung und gegebenenfalls der konkrete Verbesserungsvorschlag.\n\nTATSÄCHLICHE PARTITUR:\n'+scoreForCritique+'\n\nFORMAT DER PARTITUR:\n'+window.CompositionEngine.TECHNICAL_CONTRACT;
  const r=await reflectionModelCall(snapshot,key,prompt,'critical_score_analysis');
  currentRun.pendingImprovement={at:iso(),assessment:r.text,sourceScore,provider:snapshot.provider,model:snapshot.model};
  currentRun.reflection={at:iso(),assessment:r.text,originalScore:sourceScore,pending:true,unchanged:/^\s*URTEIL:\s*BEHALTEN\b/im.test(r.text)};
@@ -345,6 +345,6 @@ fetch(MANIFEST,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Manifest '
 </script>
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.7.0',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.7.1',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
