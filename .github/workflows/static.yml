@@ -38,7 +38,7 @@ jobs:
       - name: Startup smoke test
         shell: bash
         run: |
-          grep -Eq "Version 0\.5\.[0-9]+" index.html
+          grep -Eq "Version 0\.[5-9]\.[0-9]+" index.html
           grep -q "const APP_VERSION=" index.html
           grep -q "id=\"compose\"" index.html
           grep -q "id=\"model\"" index.html
