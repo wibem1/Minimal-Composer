@@ -44,6 +44,8 @@ jobs:
           grep -q "id=\"model\"" index.html
           grep -q "function setDefaultModel" index.html
           grep -q "addEventListener('click'" index.html
+          grep -q "const {buildMidi}=window.CompositionEngine;" index.html
+          ! grep -q "window.CompositionEngines.standard" index.html
 
   deploy:
     needs: test
