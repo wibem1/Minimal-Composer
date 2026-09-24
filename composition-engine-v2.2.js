@@ -1,8 +1,8 @@
 (()=>{'use strict';
 
 const ENGINE_NAME='Composition Engine';
-const ENGINE_VERSION='2.2.0';
-const BUILD=22;
+const ENGINE_VERSION='2.3.0';
+const BUILD=23;
 
 const TECHNICAL_CONTRACT=`TECHNISCHES AUSGABEFORMAT
 Nur valides JSON:
@@ -20,9 +20,9 @@ Gib ausschließlich das JSON-Objekt aus.`;
 
 function createPrompts(snapshot,concept=''){
  return{
-  musicalDraft:'Entwickle zunächst deine eigene musikalische Vorstellung zu diesem Kompositionsauftrag. In diesem Schritt noch keine technische Ausgabe: kein JSON, MIDI, MusicXML, LilyPond, ABC oder Programmcode. Antworte nur mit deiner musikalischen Vorstellung.\n\nAUFTRAG:\n'+snapshot.visibleTask,
-  midiTranslation:'AUFTRAG:\n'+snapshot.visibleTask+'\n\nMUSIKALISCHE VORSTELLUNG:\n'+concept+'\n\nKomponiere das verlangte Musikstück eigenständig. Musikalische Entscheidungen triffst du selbst.\n\n'+TECHNICAL_CONTRACT,
-  compositionIdea:concept
+  musicalDraft:'Komponiere das verlangte Musikstück vollständig und eigenständig. Triff alle musikalischen Entscheidungen selbst. In diesem Schritt noch keine technische Ausgabe: kein JSON, MIDI, MusicXML, LilyPond, ABC oder Programmcode. Halte die fertige Komposition so vollständig fest, dass sie anschließend technisch übertragen werden kann.\n\nAUFTRAG:\n'+snapshot.visibleTask,
+  midiTranslation:'Übertrage die bereits fertige Komposition vollständig und unverändert in das technische Ausgabeformat. Keine Analyse, keine Erklärung und keine Neukomposition.\n\nFERTIGE KOMPOSITION:\n'+concept+'\n\n'+TECHNICAL_CONTRACT,
+  compositionIdea:''
  };
 }
 function duplicateTitlePrompt(title,allTitles,concept){return'Erfinde ausschließlich einen neuen kurzen Werktitel für die bereits fertige Komposition. Verändere die Musik nicht. Antworte nur mit dem Titel.\n\nBISHERIGER TITEL:\n'+title+'\n\nBEREITS VERWENDET:\n'+allTitles.join('\n')+'\n\nKONTEXT:\n'+String(concept||'').slice(0,700)}
@@ -39,14 +39,14 @@ function scoreBarCount(score){const ts=Array.isArray(score?.timeSignature)?score
 function providerName(p){return p==='anthropic'?'Anthropic / Claude':p==='google'?'Google / Gemini':p==='openai'?'OpenAI':String(p||'')}
 function compositionProfile(snapshot,score,concept){return{bpm:Number(score?.bpm)||null,key:String(score?.key||score?.keySignature||score?.tonality||'').trim(),barCount:scoreBarCount(score),provider:providerName(snapshot?.provider),model:String(snapshot?.model||'').trim(),description:String(concept||'').trim(),text:[Number(score?.bpm)?Number(score.bpm)+' BPM':'',scoreBarCount(score)+' Takte',[providerName(snapshot?.provider),snapshot?.model].filter(Boolean).join(' · ')].filter(Boolean).join(' · ')+'\n\n'+String(concept||'').trim()}}
 async function compose({snapshot,key,repeatOf=null,seriesId=null,runId,now,requestModel,usedTitles=[]}){
- const run={id:runId,testId:runId,schema:'minimal-composer-diagnosis-v4',app:{name:'Minimal Composer',version:'0.7.0'},engine:{name:ENGINE_NAME,version:ENGINE_VERSION,build:BUILD},seriesId,startedAt:now(),repeatOf,contextMode:'isolated-autonomous-two-stage',input:{visibleTask:snapshot.visibleTask,provider:snapshot.provider,model:snapshot.model},technicalContract:TECHNICAL_CONTRACT,events:[],aiCalls:[],requestSnapshot:structuredClone(snapshot)};
+ const run={id:runId,testId:runId,schema:'minimal-composer-diagnosis-v4',app:{name:'Minimal Composer',version:'0.8.0'},engine:{name:ENGINE_NAME,version:ENGINE_VERSION,build:BUILD},seriesId,startedAt:now(),repeatOf,contextMode:'isolated-compose-then-technical',input:{visibleTask:snapshot.visibleTask,provider:snapshot.provider,model:snapshot.model},technicalContract:TECHNICAL_CONTRACT,events:[],aiCalls:[],requestSnapshot:structuredClone(snapshot)};
  const ev=(phase,data={})=>run.events.push({at:now(),phase,...data});
  ev('run_started',{note:'Keine frühere Unterhaltung oder Komposition wird an das Modell übertragen.'});
  const call=(prompt,stage)=>requestModel({snapshot,key,promptText:prompt,stage,run,event:ev});
- const concept=await call(createPrompts(snapshot).musicalDraft,'composition.imagination');if(!concept.trim())throw new Error('Die musikalische Vorstellung ist leer.');run.musicalDraft=concept;run.soundConcept=concept;
- const translated=await call(createPrompts(snapshot,concept).midiTranslation,'composition.score');let obj;try{obj=extractJson(translated)}catch(e){run.failure={stage:'composition.score.parse',name:e?.name||'Error',message:e?.message||String(e),outputCharacters:String(translated||'').length,outputTail:String(translated||'').slice(-1200)};ev('model_json_parse_failed',{stage:'composition.score',error:run.failure.message});throw new Error('Partitur-JSON konnte nicht gelesen werden: '+run.failure.message)}run.parsedModelJson=obj;ev('model_json_parsed',{stage:'composition.score',changed:false});let score;try{score=findScore(obj)}catch(e){run.failure={stage:'composition.score.validate',name:e?.name||'Error',message:e?.message||String(e)};ev('score_validation_failed',{stage:'composition.score',error:run.failure.message});throw new Error('Partiturformat ungültig: '+run.failure.message)}run.score=score;
+ const concept=await call(createPrompts(snapshot).musicalDraft,'composition.music');if(!concept.trim())throw new Error('Die fertige Komposition ist leer.');run.musicalDraft=concept;
+ const translated=await call(createPrompts(snapshot,concept).midiTranslation,'composition.technical');let obj;try{obj=extractJson(translated)}catch(e){run.failure={stage:'composition.score.parse',name:e?.name||'Error',message:e?.message||String(e),outputCharacters:String(translated||'').length,outputTail:String(translated||'').slice(-1200)};ev('model_json_parse_failed',{stage:'composition.technical',error:run.failure.message});throw new Error('Partitur-JSON konnte nicht gelesen werden: '+run.failure.message)}run.parsedModelJson=obj;ev('model_json_parsed',{stage:'composition.technical',changed:false});let score;try{score=findScore(obj)}catch(e){run.failure={stage:'composition.score.validate',name:e?.name||'Error',message:e?.message||String(e)};ev('score_validation_failed',{stage:'composition.technical',error:run.failure.message});throw new Error('Partiturformat ungültig: '+run.failure.message)}run.score=score;
  const title=String(score?.title||'').trim(),allTitles=usedTitles.filter(Boolean);if(title&&allTitles.some(t=>String(t).toLocaleLowerCase('de-DE')===title.toLocaleLowerCase('de-DE'))){let nt=(await call(duplicateTitlePrompt(title,allTitles,concept),'composition.title')).trim().replace(/^Titel:\s*/i,'').replace(/^['“”"]|['“”"]$/g,'').trim();if(nt)score.title=nt}
- let midiBytes;try{midiBytes=buildMidi(score)}catch(e){run.failure={stage:'midi.build',name:e?.name||'Error',message:e?.message||String(e)};ev('midi_build_failed',{error:run.failure.message});throw new Error('MIDI-Erzeugung fehlgeschlagen: '+run.failure.message)}const buf=midiBytes.buffer.slice(midiBytes.byteOffset,midiBytes.byteOffset+midiBytes.byteLength);run.midi={bytes:midiBytes.byteLength,sha256:await sha256Buffer(buf),note:'Deterministisch lokal erzeugt; keine musikalische Nachbearbeitung.'};run.idea=concept;run.profile=compositionProfile(snapshot,score,concept);run.completedAt=now();run.status='ok';return{run,midiBytes}
+ let midiBytes;try{midiBytes=buildMidi(score)}catch(e){run.failure={stage:'midi.build',name:e?.name||'Error',message:e?.message||String(e)};ev('midi_build_failed',{error:run.failure.message});throw new Error('MIDI-Erzeugung fehlgeschlagen: '+run.failure.message)}const buf=midiBytes.buffer.slice(midiBytes.byteOffset,midiBytes.byteOffset+midiBytes.byteLength);run.midi={bytes:midiBytes.byteLength,sha256:await sha256Buffer(buf),note:'Deterministisch lokal erzeugt; keine musikalische Nachbearbeitung.'};const idea='';run.idea=idea;run.profile=compositionProfile(snapshot,score,concept);run.completedAt=now();run.status='ok';return{run,midiBytes}
 }
 window.CompositionEngine=Object.freeze({name:ENGINE_NAME,version:ENGINE_VERSION,BUILD,compose,TECHNICAL_CONTRACT,createPrompts,duplicateTitlePrompt,makeRequest,actualRequest,extractText,extractJson,findScore,sha256Text,sha256Buffer,buildMidi});
 })();
