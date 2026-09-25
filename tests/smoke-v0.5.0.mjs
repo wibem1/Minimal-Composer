@@ -15,3 +15,5 @@ ok('IndexedDB stores',html.includes("createObjectStore('series'")&&html.includes
 ok('PWA v0.8.7',html.includes("service-worker.js?v=0.8.7")&&html.includes("manifest.webmanifest?v=0.8.7"));
 ok('diagnostic prompt protocol',html.includes('promptTextFromCall')&&html.includes('extractedModelText'));
 console.log('PASS '+checks.length+' checks');for(const x of checks)console.log('✓ '+x);
+
+// Architecture smoke guard updated for v0.8.7.
