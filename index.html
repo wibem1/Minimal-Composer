@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.8.7" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.7" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.7" />
+<link rel="manifest" href="manifest.webmanifest?v=0.8.8" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.8" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -19,23 +19,23 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.7 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.8 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label>Aktives Kompositionsmodul</label><div class="small" id="engineVersionActive">Composition Engine wird geladen …</div></div></div><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
 <section id="sfPlayer" class="card" style="margin:14px 0"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px"><strong>MIDI-Player · SoundFont</strong><span id="sfState" class="small">bereit</span></div><div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center"><button id="sfPlay" type="button">▶︎</button><button id="sfStop" type="button">■</button><input id="sfSeek" type="range" min="0" max="1" step="0.01" value="0" style="width:100%"><span id="sfTime" class="small">0:00 / 0:00</span></div></section>
-<div class="actions"><button class="primary" id="compose">Komponieren</button><button id="midiLoad">MIDI laden</button><input id="midiLoadFile" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" hidden><button id="abcLoad">ABC laden</button><input id="abcLoadFile" type="file" accept=".abc,text/vnd.abc,text/plain" hidden><button id="midi" disabled>MIDI speichern</button><button id="abc" disabled>ABC herunterladen</button><button id="abcTools" disabled>In ABC Tools öffnen</button><button id="musicxml" disabled>MusicXML speichern</button><button id="diagnosis" disabled>Diagnosedatei</button><button id="prompts" disabled>Kommunikationsprotokoll</button><button id="reflect" disabled>Analysieren</button><button id="applyImprovement" disabled>Verbesserung umsetzen</button></div>
+<div class="actions"><button class="primary" id="compose" disabled>Komponieren</button><button id="midiLoad">MIDI laden</button><input id="midiLoadFile" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" hidden><button id="abcLoad">ABC laden</button><input id="abcLoadFile" type="file" accept=".abc,text/vnd.abc,text/plain" hidden><button id="abcTools" disabled>In ABC Tools öffnen</button><button id="reflect" disabled>Analysieren</button><button id="applyImprovement" disabled>Verbesserung umsetzen</button></div><div class="actions" style="margin-top:9px"><button id="midi" disabled>MIDI speichern</button><button id="abc" disabled>ABC speichern</button><button id="musicxml" disabled>MusicXML speichern</button><button id="diagnosis" disabled>Diagnosedatei speichern</button><button id="prompts" disabled>Kommunikationsprotokoll</button></div>
 <div class="status" id="status"></div>
 <section class="card" id="resultCard" hidden><strong id="title">Ergebnis</strong><div id="ideaWrap" hidden><label>Kompositionsbeschreibung</label><div class="idea" id="idea"></div></div><div class="small" id="facts" style="margin-top:10px"></div><div class="small" id="compositionCost" style="margin-top:8px"></div></section>
 <details id="notationDetails"><summary>Noten</summary><div class="actions" style="margin:10px 0"><button id="abcCopy" disabled>ABC kopieren</button></div><div id="notationView" class="card"><div class="small">Noch keine Komposition geladen.</div></div></details>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><div class="actions"><button id="keyStorageDiagnostic" type="button">Schlüsselspeicher prüfen</button></div><div id="keyStorageDiagnosticResult" class="small" style="white-space:pre-line;margin-top:8px"></div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.7</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.8</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
 <dialog id="promptsDialog" class="infoDialog"><h2>Kommunikationsprotokoll</h2><div class="small" style="margin-bottom:12px">Kompaktes Protokoll der KI-Aufrufe. Wiederholte große Nutzdaten werden nur als Vorschau angezeigt.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
 </main><script src="abc-import.js?v=0.8.4"></script><script src="https://wibem1.github.io/Composition-Engine/composition-engine.js"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.8.7';
+const APP_VERSION='0.8.8';
 const ENGINE_BUILD=window.CompositionEngine?.BUILD||null;
 const MODEL_CATALOG={
 openai:[
@@ -66,14 +66,14 @@ const DEFAULT_MODELS={openai:'gpt-5.6-sol',anthropic:'claude-fable-5',google:'ge
 const $=id=>document.getElementById(id),provider=$('provider'),model=$('model'),task=$('task'),status=$('status'),diagView=$('diag'); const engineSelect={value:'standard',options:[{value:'standard',textContent:''}],addEventListener(){}};
 function engineFor(){return window.CompositionEngine}
 function updateEngineInfo(){
- const e=engineFor(); if(!e){for(const id of ['engineVersionTop','engineVersionInfo','engineVersionActive'])$(id).textContent='Composition Engine nicht geladen'; $('compose').disabled=true;status.textContent='Kompositionsmodul konnte nicht geladen werden. Bitte Verbindung und Seite prüfen.';return}
+ const e=engineFor(); if(!e){for(const id of ['engineVersionTop','engineVersionInfo','engineVersionActive'])$(id).textContent='Composition Engine konnte nicht geladen werden'; $('compose').disabled=true;$('engineInfo').textContent='Die zentrale Composition Engine ist nicht verfügbar.';status.textContent='Kompositionsmodul konnte nicht geladen werden. Bitte Verbindung und Seite prüfen.';return false}
  const name=e?.name||'Composition Engine', version=e?.version||'unbekannt', build=e?.BUILD;
  const label=name+' '+version+(build!=null?' · Build '+build:'')+' · zentral freigegeben';
- $('engineVersionTop').textContent=label;
- $('engineVersionInfo').textContent=label;
- $('engineVersionActive').textContent=label;
+ for(const id of ['engineVersionTop','engineVersionInfo','engineVersionActive'])$(id).textContent=label;
  $('engineInfo').innerHTML='<strong>'+label+'</strong><br>Versionsangabe direkt aus dem geladenen Kompositionsmodul. Zentral freigegebene Engine; keine app-lokal fest verdrahtete Engine-Version.';
+ $('compose').disabled=false;return true
 }
+function confirmEngineLoaded(){if(updateEngineInfo())return;setTimeout(()=>updateEngineInfo(),1200)}
 let db,currentRun=null,lastRequestSnapshot=null,currentMidiBlob=null,scheduled=[],currentSeriesId=null;
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('composition_testbench',1);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('series'))d.createObjectStore('series',{keyPath:'id'});if(!d.objectStoreNames.contains('runs')){const s=d.createObjectStore('runs',{keyPath:'id'});s.createIndex('seriesId','seriesId')}if(!d.objectStoreNames.contains('meta'))d.createObjectStore('meta',{keyPath:'key'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function tx(store,mode='readonly'){return db.transaction(store,mode).objectStore(store)}
@@ -118,7 +118,8 @@ function setDefaultModel(force=null){
  for(const [value,label] of catalog){const o=document.createElement('option');o.value=value;o.textContent=label;model.appendChild(o)}
  model.value=wanted;
 }
-provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());engineSelect.addEventListener('change',()=>{updateEngineInfo();saveWorkspace()});$('contractView').textContent=window.CompositionEngine.TECHNICAL_CONTRACT;
+provider.addEventListener('change',async()=>{setDefaultModel();await saveWorkspace()});model.addEventListener('change',async()=>{localStorage.setItem('mct_model_'+provider.value,model.value);await saveWorkspace()});task.addEventListener('input',()=>saveWorkspace());engineSelect.addEventListener('change',()=>{updateEngineInfo();saveWorkspace()});confirmEngineLoaded();
+if(window.CompositionEngine)$('contractView').textContent=window.CompositionEngine.TECHNICAL_CONTRACT;
 async function newSeries(){let name=prompt('Name der neuen Testserie:',nowName());if(name===null)return;name=name.trim()||nowName();const s={id:makeId('S'),name,createdAt:iso()};await put('series',s);currentSeriesId=s.id;currentRun=null;lastRequestSnapshot=null;currentMidiBlob=null;task.value='';$('resultCard').hidden=true;$('midi').disabled=true;$('diagnosis').disabled=true;$('prompts').disabled=true;diagView.textContent='Noch kein Testlauf.';status.textContent='Neue Testserie begonnen. Frühere Serien bleiben im Verlauf erhalten.';await saveWorkspace();await refreshSeriesName();await renderHistory()}
 $('backupExport').addEventListener('click',()=>exportBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
 $('backupSecure').addEventListener('click',()=>exportSecureBackup().catch(e=>status.textContent='Backup-Fehler: '+e.message));
@@ -343,6 +344,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(refr
 
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.7',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.8',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
