@@ -4,16 +4,16 @@ const inline=html.split('<script>').slice(1).map(x=>x.split('</script>')[0]).fil
 const checks=[];const ok=(name,value)=>{if(!value)throw new Error('FAIL: '+name);checks.push(name)};
 inline.forEach((s,i)=>new vm.Script(s,{filename:'index-inline-'+(i+1)+'.js'}));ok('inline script syntax',true);
 const engineTag='https://wibem1.github.io/Composition-Engine/composition-engine.js';
-ok('central engine loaded before interface',html.indexOf(engineTag)>=0&&html.indexOf(engineTag)<html.indexOf("const APP_VERSION='0.8.7'"));
-ok('visible app version',html.includes('Version 0.8.7'));
+ok('central engine loaded before interface',html.indexOf(engineTag)>=0&&html.indexOf(engineTag)<html.indexOf("const APP_VERSION='0.8.8'"));
+ok('visible app version',html.includes('Version 0.8.8'));
 ok('no app-local engine catalogue',!html.includes('engine-manifest.json')&&!html.includes('MinimalComposerEngineResolver'));
 ok('no hard-coded old engine version',!html.includes('composition-engine.js?v=1.3.0')&&!html.includes('reference-1.3.0'));
 for(const id of ['provider','model','task','compose','midi','diagnosis','prompts','backupExport','backupSecure','backupImport','newSeries'])ok('DOM '+id,new RegExp('id=["\\\']'+id+'["\\\']').test(html));
 ok('compose handler',html.includes("$('compose').addEventListener('click'"));
 ok('diagnosis handler',html.includes("$('diagnosis').addEventListener('click'"));
 ok('IndexedDB stores',html.includes("createObjectStore('series'")&&html.includes("createObjectStore('runs'")&&html.includes("createObjectStore('meta'"));
-ok('PWA v0.8.7',html.includes("service-worker.js?v=0.8.7")&&html.includes("manifest.webmanifest?v=0.8.7"));
+ok('PWA v0.8.8',html.includes("service-worker.js?v=0.8.8")&&html.includes("manifest.webmanifest?v=0.8.8"));
 ok('diagnostic prompt protocol',html.includes('promptTextFromCall')&&html.includes('extractedModelText'));
 console.log('PASS '+checks.length+' checks');for(const x of checks)console.log('✓ '+x);
 
-// Architecture smoke guard updated for v0.8.7.
+// Architecture smoke guard updated for v0.8.8.
