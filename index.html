@@ -273,7 +273,7 @@ async function run(snapshot,repeatOf=null){const engine=engineFor(),{compose:com
 $('compose').addEventListener('click',async()=>{stopPlayback();setBusy(true);status.classList.add('composing');status.textContent='Komponiere …';try{await run(makeSnapshot(),null)}catch(e){status.textContent='Fehler: '+e.message;if(currentRun){currentRun.status=currentRun.status||'error';currentRun.completedAt=currentRun.completedAt||iso();currentRun.failure=currentRun.failure||{stage:'app.run',name:e?.name||'Error',message:e?.message||String(e)};try{if(currentRun.id||currentRun.testId)await del('runs',currentRun.id||currentRun.testId);await saveWorkspace();await renderHistory()}catch(se){status.textContent+=' | Speicherfehler: '+se.message}diagView.textContent=JSON.stringify(cleanRun(currentRun),null,2);$('diagnosis').disabled=false;$('prompts').disabled=!currentRun?.aiCalls?.length}}finally{status.classList.remove('composing');setBusy(false)}});
 
 async function reflectionModelCall(snapshot,key,promptText,stage){
- const engine=window.MinimalComposerEngineResolver&&!['standard','sound-first','sound-concept'].includes(snapshot.engine)?await window.MinimalComposerEngineResolver(snapshot.engine):engineFor(snapshot.engine||'standard');
+ const engine=engineFor();
  const templ=engine.makeRequest(snapshot.provider,snapshot.model,promptText,stage),req=engine.actualRequest(templ,key),bodyText=JSON.stringify(req.body),bodyHash=await engine.sha256Text(bodyText),rec={stage,request:{at:iso(),url:templ.url,method:'POST',headers:redactHeaders(templ.headers),body:req.body,bodySha256:bodyHash,authNote:'API-Schlüssel absichtlich nicht gespeichert.'}};
  if(!Array.isArray(currentRun.aiCalls))currentRun.aiCalls=[];
  if(!Array.isArray(currentRun.events))currentRun.events=[];
