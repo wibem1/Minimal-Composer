@@ -93,3 +93,10 @@ v0.5.18 wurde vor der Änderung als `reference-v0.5.18-before-workspace-fix` ges
 
 ## 25.09.2026 – v0.8.5 API-Schlüsselspeicher-Diagnose
 Nach dem Bericht, dass auf Android alle API-Schlüsselfelder leer erscheinen, wurde die bestehende Speicherung gegen die Referenzstände geprüft. Die Namen `mct_key_openai`, `mct_key_anthropic`, `mct_key_google` und die IndexedDB-Metaeinträge `api_key_*` sind weiterhin vorhanden. v0.8.5 ergänzt ausschließlich eine nicht-destruktive Diagnose im Bereich Technisches. Sie zeigt je Provider nur an, ob in localStorage und IndexedDB ein Wert vorhanden ist; Schlüsselwerte werden weder angezeigt noch verändert. Kompositionsengine und musikalische Pipeline bleiben unverändert.
+
+## 2026-09-25 — v0.8.7 — Stabilisierung
+- App bindet ausschließlich den zentralen Composition-Engine-Entry-Point; die veraltete lokale Engine-Kopie wurde entfernt.
+- Tote Engine-Katalog-/Resolverlogik entfernt.
+- Architekturvertrag auf Auftrag → freie Komposition → technische Übersetzung korrigiert.
+- PWA-/Service-Worker-Versionen auf 0.8.7 vereinheitlicht.
+- Veralteten Smoke-Test ersetzt; er prüft nun die aktuelle zentrale Engine-Bindung und verbietet alte 1.3-Hardcodierungen.
