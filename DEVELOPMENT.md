@@ -103,3 +103,10 @@ Nach dem Bericht, dass auf Android alle API-Schlüsselfelder leer erscheinen, wu
 - Architekturvertrag auf Auftrag → freie Komposition → technische Übersetzung korrigiert.
 - PWA-/Service-Worker-Versionen auf 0.8.7 vereinheitlicht.
 - Veralteten Smoke-Test ersetzt; er prüft nun die aktuelle zentrale Engine-Bindung und verbietet alte 1.3-Hardcodierungen.
+
+
+## 2026-09-25 – Verbindliche zentrale Engine-Anbindung
+- Minimal Composer lädt ausschließlich `https://wibem1.github.io/Composition-Engine/composition-engine.js` ohne fest verdrahtete Engine-Version.
+- Engine-Wechsel erfolgen ausschließlich im zentralen Composition-Engine-Repository; dafür wird keine neue Minimal-Composer-Version erzeugt.
+- Die alte branch-spezifische CI-Datei `v070-clean.yml`, die eine vermeintliche lokale Engine 2.2 voraussetzte, wurde aus `main` entfernt.
+- Rückkehr zu einem sicheren Engine-Stand erfolgt zentral im Composition-Engine-Repository, nicht durch App-Forks oder Testversionen.
