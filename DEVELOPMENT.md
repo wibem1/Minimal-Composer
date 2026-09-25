@@ -1,4 +1,7 @@
-# Minimal Composer Modular – Entwicklungsdokumentation
+# Minimal Composer – Entwicklungsdokumentation
+
+## Aktueller stabilisierter Stand – v0.8.7
+Der aktuelle Runtime-Pfad lädt ausschließlich den zentralen freigegebenen Composition-Engine-Entry-Point. Verbindlich ist der Ablauf **Kompositionsauftrag → freie vollständige Komposition → rein technische Übersetzung → deterministisches MIDI → Beschreibung nach der Komposition**. Die frühere v0.5-/v0.4.24-Dokumentation darunter bleibt als Entwicklungshistorie erhalten und ist keine aktuelle Runtime-Spezifikation.
 
 ## Verbindlicher Arbeitsablauf
 Vor jeder Änderung zuerst ARCHITECTURE_CONTRACT.md und danach diese Datei lesen. Anschließend den betroffenen Pfad im Referenzstand v0.4.24 bestimmen. Änderungen werden in der zuständigen Architektur vorgenommen, nicht als nachträgliche Patch-Schicht.
