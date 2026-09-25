@@ -100,3 +100,7 @@ Nach dem Bericht, dass auf Android alle API-Schlüsselfelder leer erscheinen, wu
 - Architekturvertrag auf Auftrag → freie Komposition → technische Übersetzung korrigiert.
 - PWA-/Service-Worker-Versionen auf 0.8.7 vereinheitlicht.
 - Veralteten Smoke-Test ersetzt; er prüft nun die aktuelle zentrale Engine-Bindung und verbietet alte 1.3-Hardcodierungen.
+
+## 2026-09-25 — v0.8.8 — CI-Nachprüfung
+- Nach dem v0.8.7-Smoke-Test verblieb eine tote Resolver-Referenz im freigegebenen Verbesserungsweg. Sie wurde entfernt; auch Verbesserungen verwenden nun ausschließlich die bereits geladene zentrale Engine.
+- Version und Cache auf 0.8.8 angehoben.
