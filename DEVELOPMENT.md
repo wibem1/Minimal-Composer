@@ -89,3 +89,7 @@ Ursachenprüfung gegen das zentrale Repository `wibem1/Composition-Engine`: v1.1
 
 ## 20.09.2026 – v0.5.19 Workspace-Provider/Modell-Konsistenz
 v0.5.18 wurde vor der Änderung als `reference-v0.5.18-before-workspace-fix` gesichert. Ursache des weiterhin sichtbaren Fehlers „Anthropic + gpt-5.6-sol (gespeichert)“ war `setDefaultModel()`: Jeder gespeicherte/erzwungene Modellwert, der nicht im Katalog des aktuellen Providers vorkam, wurde absichtlich als zusätzliche Option „(gespeichert)“ eingefügt. Dadurch konservierte die Workspace-Wiederherstellung providerfremde Altwerte. v0.5.19 akzeptiert force/localStorage-Werte nur noch, wenn sie im Modellkatalog des aktuellen Providers enthalten sind; andernfalls wird das Provider-Defaultmodell gewählt. Composition Engine bleibt v1.1.2.
+
+
+## 25.09.2026 – v0.8.5 API-Schlüsselspeicher-Diagnose
+Nach dem Bericht, dass auf Android alle API-Schlüsselfelder leer erscheinen, wurde die bestehende Speicherung gegen die Referenzstände geprüft. Die Namen `mct_key_openai`, `mct_key_anthropic`, `mct_key_google` und die IndexedDB-Metaeinträge `api_key_*` sind weiterhin vorhanden. v0.8.5 ergänzt ausschließlich eine nicht-destruktive Diagnose im Bereich Technisches. Sie zeigt je Provider nur an, ob in localStorage und IndexedDB ein Wert vorhanden ist; Schlüsselwerte werden weder angezeigt noch verändert. Kompositionsengine und musikalische Pipeline bleiben unverändert.
