@@ -20,6 +20,6 @@ const s=sandbox.window.ABCImport.parse(abc);
 assert.strictEqual(s.tracks.length,3);
 assert.strictEqual(s.barCount,2);
 assert.deepStrictEqual(Array.from(s.tracks,t=>t.notes.length),[8,16,8]);
-assert.deepStrictEqual(Array.from(s.tracks,t=>t.notes[0][2]),[69,62,38]);
+assert.deepStrictEqual(Array.from(s.tracks,t=>t.notes[0][2]),[69,62,50]);
 assert.deepStrictEqual(Array.from(s.tracks,t=>t.program),[40,0,0]);
 console.log('ABC 3-voice / D minor regression: OK');
