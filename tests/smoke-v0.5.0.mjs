@@ -3,7 +3,7 @@ const html=fs.readFileSync('index.html','utf8');
 const inline=html.split('<script>').slice(1).map(x=>x.split('</script>')[0]).filter(Boolean);
 const checks=[];const ok=(name,value)=>{if(!value)throw new Error('FAIL: '+name);checks.push(name)};
 inline.forEach((s,i)=>new vm.Script(s,{filename:'index-inline-'+(i+1)+'.js'}));ok('inline script syntax',true);
-const engineTag='https://raw.githubusercontent.com/wibem1/Composition-Engine/representation-lab-2.9.0/composition-engine.js';
+const engineTag='https://wibem1.github.io/Composition-Engine/composition-engine.js';
 ok('central engine loaded before interface',html.indexOf(engineTag)>=0&&html.indexOf(engineTag)<html.indexOf("const APP_VERSION='1.0.0'"));
 ok('visible app version',html.includes('Version 1.0.0'));
 ok('representation selector options',html.includes('Compact 2.8')&&html.includes('ABC')&&html.includes('MIDI Performance')&&html.includes('Freie Wahl der KI'));ok('snapshot carries representation',html.includes('representation:representation.value'));ok('no app-local engine catalogue',!html.includes('engine-manifest.json')&&!html.includes('MinimalComposerEngineResolver'));
