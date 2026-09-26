@@ -35,6 +35,9 @@ jobs:
           PY
           for f in /tmp/minimal-inline-*.js; do [ -e "$f" ] && node --check "$f"; done
 
+      - name: ABC multi-voice regression
+        run: node tests/abc-import-regression.test.js
+
       - name: Startup smoke test
         shell: bash
         run: |
