@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.8.21" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.21" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.21" />
+<link rel="manifest" href="manifest.webmanifest?v=0.8.22" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.22" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.22" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.21 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.22 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label>Aktives Kompositionsmodul</label><div class="small" id="engineVersionActive">Composition Engine wird geladen …</div></div></div><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -30,12 +30,12 @@
 <details id="notationDetails"><summary>Noten</summary><div class="actions" style="margin:10px 0"><button id="abcCopy" disabled>ABC kopieren</button></div><div id="notationView" class="card"><div class="small">Noch keine Komposition geladen.</div></div></details>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><div class="actions"><button id="keyStorageDiagnostic" type="button">Schlüsselspeicher prüfen</button></div><div id="keyStorageDiagnosticResult" class="small" style="white-space:pre-line;margin-top:8px"></div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.21</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.22</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
 <dialog id="promptsDialog" class="infoDialog"><h2>Kommunikationsprotokoll</h2><div class="small" style="margin-bottom:12px">Kompaktes Protokoll der KI-Aufrufe. Wiederholte große Nutzdaten werden nur als Vorschau angezeigt.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
-</main><script src="abc-import.js?v=0.8.4"></script><script src="https://wibem1.github.io/Composition-Engine/composition-engine.js?v=2.5.1"></script><script>
+</main><script src="abc-import.js?v=0.8.4"></script><script src="https://wibem1.github.io/Composition-Engine/composition-engine.js?v=2.6.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.8.21';
+const APP_VERSION='0.8.22';
 const ENGINE_BUILD=window.CompositionEngine?.BUILD||null;
 const MODEL_CATALOG={
 openai:[
@@ -353,6 +353,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(refr
 
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.21',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.22',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
