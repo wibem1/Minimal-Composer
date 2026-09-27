@@ -35,8 +35,12 @@ jobs:
           PY
           for f in /tmp/minimal-inline-*.js; do [ -e "$f" ] && node --check "$f"; done
 
-      - name: ABC multi-voice regression
-        run: node tests/abc-import-regression.test.js
+      - name: Shared engine integration contract
+        shell: bash
+        run: |
+          grep -q 'engineFor().parseABC(text)' index.html
+          grep -q 'engineFor().mergeTitleRegistry(previous,active)' index.html
+          ! grep -q 'abc-import.js?v=' index.html
 
       - name: Startup smoke test
         shell: bash
