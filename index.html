@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 1.1.1 · direkter KI-Aufruf ohne Composition Engine</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 1.1.2 · direkter KI-Aufruf ohne Composition Engine</div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <select id="representation" hidden><option value="free" selected>FREE</option></select><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select></div></div>
 <details><summary>Zusätzliche Angaben an die KI</summary><div class="small" style="margin:8px 0">Editierbar und gespeichert. Genau dieser Text wird zusätzlich zum Kompositionsauftrag gesendet. Es gibt keine weiteren Prompt-Zusätze.</div><textarea id="generalInfo" spellcheck="false" placeholder="Leer – hier nur ausdrücklich gewünschte zusätzliche Angaben eintragen."></textarea></details><label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -30,12 +30,12 @@
 <details id="notationDetails"><summary>Noten</summary><div class="actions" style="margin:10px 0"><button id="abcCopy" disabled>ABC kopieren</button></div><div id="notationView" class="card"><div class="small">Noch keine Komposition geladen.</div></div></details>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><div class="actions"><button id="keyStorageDiagnostic" type="button">Schlüsselspeicher prüfen</button></div><div id="keyStorageDiagnosticResult" class="small" style="white-space:pre-line;margin-top:8px"></div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 1.1.1</strong></p><p>Direkter KI-Aufruf ohne Composition Engine. An die KI gehen ausschließlich „Zusätzliche Angaben an die KI“ und „Kompositionsauftrag“.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 1.1.2</strong></p><p>Direkter KI-Aufruf ohne Composition Engine. An die KI gehen ausschließlich „Zusätzliche Angaben an die KI“ und „Kompositionsauftrag“.</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
 <dialog id="promptsDialog" class="infoDialog"><h2>Kommunikationsprotokoll</h2><div class="small" style="margin-bottom:12px">Kompaktes Protokoll der KI-Aufrufe. Wiederholte große Nutzdaten werden nur als Vorschau angezeigt.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
 </main><script>
 (async()=>{'use strict';
-const APP_VERSION='1.1.1';
+const APP_VERSION='1.1.2';
 const MODEL_CATALOG={
 openai:[
  ['gpt-6-astra','GPT-6 Astra'],
@@ -258,7 +258,8 @@ async function run(snapshot,repeatOf=null){
 }
 $('compose').addEventListener('click',async()=>{stopPlayback();setBusy(true);status.classList.add('composing');status.textContent='Komponiere …';try{await run(makeSnapshot(),null)}catch(e){status.textContent='Fehler: '+e.message;if(currentRun){currentRun.status=currentRun.status||'error';currentRun.completedAt=currentRun.completedAt||iso();currentRun.failure=currentRun.failure||{stage:'app.run',name:e?.name||'Error',message:e?.message||String(e)};try{if(currentRun.id||currentRun.testId)await del('runs',currentRun.id||currentRun.testId);await saveWorkspace();await renderHistory()}catch(se){status.textContent+=' | Speicherfehler: '+se.message}diagView.textContent=JSON.stringify(cleanRun(currentRun),null,2);$('diagnosis').disabled=false;$('prompts').disabled=!currentRun?.aiCalls?.length}}finally{status.classList.remove('composing');setBusy(false)}});
 
-async function reflectionModelCall(){throw new Error('Analyse ist ohne Composition Engine deaktiviert.')}\nfunction renderReflection(r){
+async function reflectionModelCall(){throw new Error('Analyse ist ohne Composition Engine deaktiviert.')}
+function renderReflection(r){
  const assessment=String(r?.reflection?.assessment||r?.pendingImprovement?.assessment||'').trim();
  $('analysisCard').hidden=!assessment;
  $('analysisText').textContent=assessment;
@@ -266,7 +267,8 @@ async function reflectionModelCall(){throw new Error('Analyse ist ohne Compositi
  const unchanged=/^\s*URTEIL:\s*BEHALTEN\b/im.test(assessment);
  $('analysisDecision').textContent=unchanged?'Ergebnis der Analyse: keine Änderung empfohlen.':'Ergebnis der Analyse: Änderung empfohlen. Prüfe den Vorschlag oben, bevor du ihn umsetzt.';
 }
-async function engineReflectionRequest(){throw new Error('Analyse ist ohne Composition Engine deaktiviert.')}\nasync function analyzeForImprovement(){
+async function engineReflectionRequest(){throw new Error('Analyse ist ohne Composition Engine deaktiviert.')}
+async function analyzeForImprovement(){
  if(!currentRun?.score)throw new Error('Bitte zuerst eine fertige Komposition laden.');
  const snapshot={provider:provider.value,model:model.value.trim(),engine:engineSelect.value};
  if(!snapshot.model)throw new Error('Bitte ein Modell angeben.');
