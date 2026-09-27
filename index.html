@@ -36,9 +36,10 @@
 </main><script>
 window.__compositionEngineReady=(async()=>{
   'use strict';
-  const url='https://wibem1.github.io/Composition-Engine/composition-engine.js';
+  const baseUrl='https://wibem1.github.io/Composition-Engine/composition-engine.js';
+  const url=baseUrl+'?t='+Date.now();
   try{
-    const response=await fetch(url,{cache:'no-store'});
+    const response=await fetch(url,{cache:'no-store',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
     if(!response.ok)throw new Error('HTTP '+response.status);
     const source=await response.text();
     (0,eval)(source+'\n//# sourceURL='+url);
