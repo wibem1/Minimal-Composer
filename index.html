@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Minimal Composer" />
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="manifest" href="manifest.webmanifest?v=0.8.13" />
-<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.13" />
-<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.13" />
+<link rel="manifest" href="manifest.webmanifest?v=0.8.14" />
+<link rel="icon" type="image/png" sizes="192x192" href="minimal-icon-192.png?v=0.8.14" />
+<link rel="apple-touch-icon" sizes="180x180" href="minimal-icon-180.png?v=0.8.14" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -19,7 +19,7 @@
 </style>
 </head>
 <body><main>
-<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.13 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
+<div class="topbar"><div><h1>Minimal Composer</h1><div class="version">Version 0.8.14 · <span id="engineVersionTop">Composition Engine wird geladen …</span></div></div><button id="infoBtn" class="infoBtn" type="button">ⓘ Info</button></div>
 <div class="seriesbar"><div><div class="small">Aktuelle Testserie</div><div class="seriesname" id="seriesName">–</div></div></div>
 <div class="row"><div><label>Aktives Kompositionsmodul</label><div class="small" id="engineVersionActive">Composition Engine wird geladen …</div></div></div><div class="row"><div><label for="provider">KI</label><select id="provider"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></div><div><label for="model">Modell</label><select id="model"></select><div class="actions" style="margin-top:6px"><button id="modelRefresh" type="button">Modelle aktualisieren</button></div><div id="modelRefreshInfo" class="small" aria-live="polite">Modelle über die Anbieter-API abrufen.</div></div></div>
 <label for="task">Kompositionsauftrag</label><textarea id="task" spellcheck="false" placeholder="z. B. Cello/Klavier, 16 Takte"></textarea>
@@ -31,12 +31,12 @@
 <details id="notationDetails"><summary>Noten</summary><div class="actions" style="margin:10px 0"><button id="abcCopy" disabled>ABC kopieren</button></div><div id="notationView" class="card"><div class="small">Noch keine Komposition geladen.</div></div></details>
 <details open><summary>Verlauf</summary><div class="small" style="margin:8px 0">Testserien und alle Testläufe bleiben lokal in diesem Browser erhalten. Ein geladener Lauf wird nicht automatisch an die KI geschickt.</div><div class="history" id="history"></div></details>
 <details><summary>Technisches</summary><div class="small" style="margin:8px 0 10px">Sicherung, Testserien und API-Zugänge.</div><div class="actions"><button id="backupExport">Backup</button><button id="backupSecure">Backup + Schlüssel</button><button id="backupImport">Backup laden</button><input id="backupFile" type="file" accept="application/json,.json" hidden><button id="newSeries">Neue Testserie</button></div><div class="small" style="margin:18px 0 10px">API-Schlüssel bleiben nur in diesem Browser und werden niemals in die Diagnosedatei geschrieben.</div><div class="actions"><button id="keyStorageDiagnostic" type="button">Schlüsselspeicher prüfen</button></div><div id="keyStorageDiagnosticResult" class="small" style="white-space:pre-line;margin-top:8px"></div><label for="keyOpenAI">OpenAI API Key</label><input id="keyOpenAI" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyAnthropic">Anthropic API Key</label><input id="keyAnthropic" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /><label for="keyGoogle">Google AI API Key</label><input id="keyGoogle" class="api-key" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" /></details>
-<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.13</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
+<dialog id="infoDialog" class="infoDialog"><h2>Minimal Composer</h2><p><strong>Version 0.8.14</strong><br><span id="engineVersionInfo">Composition Engine wird geladen …</span></p><h3>Gewählte Composition Engine</h3><p id="engineInfo"></p><h3>Aktueller Stand</h3><p>Die App verwendet ausschließlich den zentralen, freigegebenen Einstiegspunkt der Composition Engine. Die tatsächlich geladene Engine-Version wird oben und in diesem Infofenster aus dem Modul selbst angezeigt.</p><h3>Zu testen</h3><p>Mit GPT-5.6 Sol: „Komponiere ein Stück für Klavier von 32 Takten im Stil von Beethoven.“</p><div class="infoClose"><button id="infoClose" type="button">Schließen</button></div></dialog>
 <dialog id="promptsDialog" class="infoDialog"><h2>Kommunikationsprotokoll</h2><div class="small" style="margin-bottom:12px">Vollständiges Protokoll der KI-Kommunikation. Herkunft jedes Bestandteils wird als APP, ENGINE, SYSTEM/API oder KI gekennzeichnet. Zugangsdaten werden nicht gespeichert.</div><div id="promptsView"></div><div class="infoClose"><button id="promptsClose" type="button">Schließen</button></div></dialog><div id="diag" hidden>Noch kein Testlauf.</div>
 <div id="contractView" hidden></div>
-</main><script src="abc-import.js?v=0.8.13"></script><script src="https://wibem1.github.io/Composition-Engine/composition-engine.js?v=2.3.0"></script><script>
+</main><script src="abc-import.js?v=0.8.14"></script><script src="https://wibem1.github.io/Composition-Engine/composition-engine.js?v=2.3.0"></script><script>
 (()=>{'use strict';
-const APP_VERSION='0.8.13';
+const APP_VERSION='0.8.14';
 const ENGINE_BUILD=window.CompositionEngine?.BUILD||null;
 const MODEL_CATALOG={
 openai:[
@@ -177,33 +177,59 @@ function scoreToABC(score){if(!score)return'';const ts=Array.isArray(score.timeS
 function xmlEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
 function musicXmlPitch(midi){const n=Math.max(0,Math.min(127,Math.round(Number(midi)||60))),pcs=[['C',0],['C',1],['D',0],['D',1],['E',0],['F',0],['F',1],['G',0],['G',1],['A',0],['A',1],['B',0]],x=pcs[n%12];return{step:x[0],alter:x[1],octave:Math.floor(n/12)-1}}
 function scoreToMusicXML(score){
- if(!score)return'';
- const div=4,ts=Array.isArray(score.timeSignature)?score.timeSignature:[4,4],num=+ts[0]||4,den=+ts[1]||4;
- const barQuarter=num*4/den,measureDuration=Math.round(barQuarter*div),title=String(score.title||'Komposition'),tracks=score.tracks||[];
- const piano=tracks.length===2&&tracks.every(t=>/klavier|piano|rechte hand|linke hand/i.test(String(t.name||''))),src=piano?tracks:[tracks[0]];
- const pitch=m=>{const names=[['C',0],['C',1],['D',0],['E',-1],['E',0],['F',0],['F',1],['G',0],['A',-1],['A',0],['B',-1],['B',0]],n=Math.round(+m||60),x=names[(n%12+12)%12];return{step:x[0],alter:x[1],octave:Math.floor(n/12)-1}};
- const typeFor=d=>{for(const x of [[4,'whole',0],[3,'half',1],[2,'half',0],[1.5,'quarter',1],[1,'quarter',0],[.75,'eighth',1],[.5,'eighth',0],[.375,'16th',1],[.25,'16th',0],[.125,'32nd',0]])if(Math.abs(x[0]-d)<.01)return x;return null};
- const noteXml=(n,staff,chord=false)=>{const q=pitch(n.p),t=typeFor(n.d);return '<note dynamics="'+Math.round((n.v/127)*100)+'">'+(chord?'<chord/>':'')+'<pitch><step>'+q.step+'</step>'+(q.alter?'<alter>'+q.alter+'</alter>':'')+'<octave>'+q.octave+'</octave></pitch><duration>'+Math.round(n.d*div)+'</duration><voice>'+staff+'</voice>'+(t?'<type>'+t[1]+'</type>'+('<dot/>'.repeat(t[2])):'')+'<staff>'+staff+'</staff></note>'};
- const restXml=(d,staff)=>{const t=typeFor(d);return '<note><rest/><duration>'+Math.round(d*div)+'</duration><voice>'+staff+'</voice>'+(t?'<type>'+t[1]+'</type>'+('<dot/>'.repeat(t[2])):'')+'<staff>'+staff+'</staff></note>'};
- let out='<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">\n<score-partwise version="4.0"><work><work-title>'+xmlEsc(title)+'</work-title></work><part-list><score-part id="P1"><part-name>'+(piano?'Klavier':xmlEsc(src[0]?.name||'Instrument'))+'</part-name></score-part></part-list><part id="P1">';
- const endTime=src.flatMap(t=>t?.notes||[]).reduce((m,n)=>Math.max(m,(+n[0]||0)+(+n[1]||0)),0),bars=Math.max(1,Math.ceil(endTime/barQuarter));
- for(let bi=0;bi<bars;bi++){
-  const bs=bi*barQuarter,be=bs+barQuarter;
-  out+='<measure number="'+(bi+1)+'">';
-  if(!bi){out+='<attributes><divisions>4</divisions><time><beats>'+num+'</beats><beat-type>'+den+'</beat-type></time><staves>'+src.length+'</staves><clef number="1"><sign>G</sign><line>2</line></clef>'+(src.length>1?'<clef number="2"><sign>F</sign><line>4</line></clef>':'')+'</attributes>';out+='<direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>'+Math.max(1,Math.round(+score.bpm||120))+'</per-minute></metronome></direction-type><sound tempo="'+Math.max(1,Math.round(+score.bpm||120))+'"/></direction>'}
-  for(let si=0;si<src.length;si++){
-   if(si)out+='<backup><duration>'+measureDuration+'</duration></backup>';
-   const staff=si+1,ns=[...(src[si]?.notes||[])].filter(n=>Array.isArray(n)&&n.length>=4&&(+n[0]||0)>=bs-1e-7&&(+n[0]||0)<be-1e-7).map(n=>({s:+n[0]||0,d:Math.min(Math.max(1/16,+n[1]||0),be-(+n[0]||0)),p:+n[2]||60,v:Math.max(1,Math.min(127,Math.round(+n[3]||80)))})).sort((a,b)=>a.s-b.s||a.p-b.p);
-   const groups=[];
-   for(const n of ns){let g=groups.find(x=>Math.abs(x.s-n.s)<1e-7&&Math.abs(x.d-n.d)<1e-7);if(!g){g={s:n.s,d:n.d,notes:[]};groups.push(g)}g.notes.push(n)}
-   groups.sort((a,b)=>a.s-b.s);
-   let cur=bs;
-   for(const g of groups){if(g.s>cur+1e-7)out+=restXml(g.s-cur,staff);g.notes.forEach((n,k)=>out+=noteXml(n,staff,k>0));cur=Math.max(cur,g.s+g.d)}
-   if(cur<be-1e-7)out+=restXml(be-cur,staff);
-  }
-  out+='</measure>';
+ if(!score)return '';
+ const tracks=(score.tracks||[]).filter(t=>Array.isArray(t.notes));
+ if(!tracks.length)return '';
+ const esc=xmlEsc,div=10080,ts=Array.isArray(score.timeSignature)?score.timeSignature:[4,4];
+ const num=Number(ts[0])||4,den=Number(ts[1])||4,barQ=num*4/den;
+ const units=d=>Math.max(1,Math.round(d*div));
+ const pitch=m=>{const spell=[['C',0],['C',1],['D',0],['E',-1],['E',0],['F',0],['F',1],['G',0],['A',-1],['A',0],['B',-1],['B',0]];const n=Math.round(Number(m)||60),x=spell[(n%12+12)%12];return '<pitch><step>'+x[0]+'</step>'+(x[1]?'<alter>'+x[1]+'</alter>':'')+'<octave>'+(Math.floor(n/12)-1)+'</octave></pitch>'};
+ const piano=t=>/klavier|piano|rechte hand|linke hand|right hand|left hand|pianoforte|keyboard/i.test(String(t.name||''))||Number(t.program)===0&&tracks.length>1;
+ const groups=[];
+ for(let i=0;i<tracks.length;i++){
+  const t=tracks[i],name=String(t.name||'Instrument '+(i+1));
+  const prev=groups[groups.length-1];
+  if(prev&&prev.piano&&piano(t)&&prev.tracks.length===1){prev.tracks.push(t);continue}
+  groups.push({name,piano:piano(t),tracks:[t]});
  }
- return out+'</part></score-partwise>';
+ const duration=Math.max(...tracks.flatMap(t=>t.notes.map(n=>(Number(n[0])||0)+(Number(n[1])||0))),0);
+ const bars=Math.max(1,Math.ceil((duration-1e-8)/barQ));
+ const title=esc(String(score.title||'Komposition'));
+ let out='<?xml version="1.0" encoding="utf-8"?>\n<score-partwise version="4.0"><work><work-title>'+title+'</work-title></work><movement-title>'+title+'</movement-title><part-list>';
+ groups.forEach((g,i)=>{const id='P'+(i+1);out+='<score-part id="'+id+'"><part-name>'+esc(g.piano?'Klavier':g.name)+'</part-name><part-abbreviation>'+esc(g.piano?'Klav.':g.name.slice(0,8))+'</part-abbreviation><score-instrument id="I'+(i+1)+'"><instrument-name>'+esc(g.name)+'</instrument-name></score-instrument><midi-instrument id="I'+(i+1)+'"><midi-channel>'+Math.min(16,i+1)+'</midi-channel><midi-program>'+Math.min(128,Math.max(1,(Number(g.tracks[0].program)||0)+1))+'</midi-program></midi-instrument></score-part>'});
+ out+='</part-list>';
+ groups.forEach((g,pi)=>{
+  out+='<part id="P'+(pi+1)+'">';
+  for(let bi=0;bi<bars;bi++){
+   const bs=bi*barQ,be=bs+barQ,barUnits=units(barQ);
+   out+='<measure number="'+(bi+1)+'">';
+   if(!bi){
+    out+='<attributes><divisions>'+div+'</divisions><time><beats>'+num+'</beats><beat-type>'+den+'</beat-type></time>';
+    if(g.tracks.length>1)out+='<staves>'+g.tracks.length+'</staves>';
+    g.tracks.forEach((tr,j)=>{const avg=tr.notes.length?tr.notes.reduce((a,n)=>a+(Number(n[2])||60),0)/tr.notes.length:60;const bass=/bass|linke hand|left hand/i.test(tr.name||'')||avg<55;out+='<clef'+(g.tracks.length>1?' number="'+(j+1)+'"':'')+'><sign>'+(bass?'F':'G')+'</sign><line>'+(bass?4:2)+'</line></clef>'});
+    out+='</attributes>';
+    if(pi===0)out+='<direction><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>'+Math.round(Number(score.bpm)||120)+'</per-minute></metronome></direction-type><sound tempo="'+Math.round(Number(score.bpm)||120)+'"/></direction>';
+   }
+   g.tracks.forEach((tr,si)=>{
+    if(si)out+='<backup><duration>'+barUnits+'</duration></backup>';
+    const staff=si+1;
+    const notes=(tr.notes||[]).filter(n=>Array.isArray(n)&&Number(n[0])<be-1e-8&&(Number(n[0])+Number(n[1]))>bs+1e-8).map(n=>({start:Math.max(bs,Number(n[0])),end:Math.min(be,Number(n[0])+Number(n[1])),pitch:Number(n[2]),velocity:Number(n[3])||80})).sort((x,y)=>x.start-y.start||x.pitch-y.pitch);
+    let cursor=bs;
+    const rest=(start,end)=>{const d=units(end-start);if(d>0)out+='<note><rest/><duration>'+d+'</duration><voice>'+staff+'</voice>'+(g.tracks.length>1?'<staff>'+staff+'</staff>':'')+'</note>'};
+    for(let ni=0;ni<notes.length;){
+     const n=notes[ni],start=n.start;if(start>cursor+1e-7)rest(cursor,start);
+     const chord=[n];ni++;
+     while(ni<notes.length&&Math.abs(notes[ni].start-start)<1e-7&&Math.abs(notes[ni].end-n.end)<1e-7)chord.push(notes[ni++]);
+     for(let j=0;j<chord.length;j++){const x=chord[j];out+='<note>'+(j?'<chord/>':'')+pitch(x.pitch)+'<duration>'+units(x.end-x.start)+'</duration><voice>'+staff+'</voice>'+(g.tracks.length>1?'<staff>'+staff+'</staff>':'')+'</note>'}
+     cursor=Math.max(cursor,n.end);
+    }
+    if(cursor<be-1e-7)rest(cursor,be);
+   });
+   out+='</measure>';
+  }
+  out+='</part>';
+ });
+ return out+'</score-partwise>';
 }
 function updateNotation(score){const abc=scoreToABC(score),view=$('notationView');$('abc').disabled=!abc;$('abcTools').disabled=!abc;$('abcCopy').disabled=!abc;$('musicxml').disabled=!score;if(!abc){view.innerHTML='<div class="small">Noch keine Komposition geladen.</div>';return}view.innerHTML='<pre style="white-space:pre-wrap;word-break:break-word;margin:0"></pre>';view.querySelector('pre').textContent=abc}
 
@@ -398,6 +424,6 @@ window.addEventListener('minimal-composer-score-loaded',refresh);setTimeout(refr
 
 <script>
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.13',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=0.8.14',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 }
 </script></body></html>
